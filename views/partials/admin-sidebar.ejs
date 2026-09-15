@@ -1,0 +1,328 @@
+<!-- ================== ADMIN SIDEBAR ================== -->
+<style>
+    /* ===== ADMIN LAYOUT ===== */
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+        background: #f3f4f6;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .admin-sidebar {
+        width: 260px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        z-index: 1100;
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .admin-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+    }
+
+    /* ===== BRAND ===== */
+    .sidebar-brand {
+        padding: 22px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 19px;
+        font-weight: 800;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.4px;
+    }
+
+    .sidebar-brand span {
+        color: var(--accent);
+    }
+
+    /* ===== ADMIN INFO ===== */
+    .sidebar-user {
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .sidebar-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .sidebar-user-info {
+        overflow: hidden;
+    }
+
+    .sidebar-user-info h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--white);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sidebar-user-info p {
+        font-size: 12px;
+        color: #9ca3af;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ===== MENU ===== */
+    .sidebar-menu {
+        list-style: none;
+        padding: 14px 12px;
+        flex: 1;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 4px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 8px;
+        font-size: 14.5px;
+        font-weight: 500;
+        color: #d1d5db;
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-menu a:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--white);
+    }
+
+    .sidebar-menu a.active {
+        background: var(--accent);
+        color: var(--white);
+        box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+    }
+
+    .sidebar-menu a .icon {
+        font-size: 17px;
+        width: 22px;
+        text-align: center;
+    }
+
+    .sidebar-menu a .badge {
+        margin-left: auto;
+        background: var(--danger);
+        color: var(--white);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    /* ===== LOGOUT ===== */
+    .sidebar-logout {
+        padding: 16px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-logout a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-logout a:hover {
+        background: var(--danger);
+        color: var(--white);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .admin-main {
+        flex: 1;
+        padding: 26px;
+        overflow-x: hidden;
+    }
+
+    .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .admin-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .admin-header p {
+        font-size: 14px;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    /* ===== MOBILE TOGGLE ===== */
+    .sidebar-toggle {
+        display: none;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1200;
+        background: var(--primary);
+        color: var(--white);
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        font-size: 20px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1050;
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .admin-sidebar {
+            position: fixed;
+            transform: translateX(-100%);
+        }
+
+        .admin-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-toggle {
+            display: flex;
+        }
+
+        .admin-main {
+            padding: 70px 16px 20px;
+        }
+    }
+</style>
+
+<!-- ===== MOBILE TOGGLE ===== -->
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- ===== OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== ADMIN LAYOUT ===== -->
+<div class="admin-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <!-- BRAND -->
+        <div class="sidebar-brand">
+            👕 Admin<span>Panel</span>
+        </div>
+
+        <!-- ADMIN USER -->
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                <%= (typeof admin !== 'undefined' && admin && admin.name) ? admin.name.charAt(0).toUpperCase() : 'A' %>
+            </div>
+            <div class="sidebar-user-info">
+                <h4><%= (typeof admin !== 'undefined' && admin && admin.name) ? admin.name : 'Admin' %></h4>
+                <p><%= (typeof admin !== 'undefined' && admin && admin.email) ? admin.email : 'admin@store.com' %></p>
+            </div>
+        </div>
+
+        <!-- MENU -->
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/admin/dashboard" class="<%= adminPage === 'dashboard' ? 'active' : '' %>">
+                    <span class="icon">📊</span> Dashibodi
+                </a>
+            </li>
+            <li>
+                <a href="/admin/products" class="<%= adminPage === 'products' ? 'active' : '' %>">
+                    <span class="icon">👕</span> Bidhaa
+                </a>
+            </li>
+            <li>
+                <a href="/admin/orders" class="<%= adminPage === 'orders' ? 'active' : '' %>">
+                    <span class="icon">📦</span> Oda
+                    <% if (typeof newOrders !== 'undefined' && newOrders > 0) { %>
+                        <span class="badge"><%= newOrders %></span>
+                    <% } %>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/customers" class="<%= adminPage === 'customers' ? 'active' : '' %>">
+                    <span class="icon">👥</span> Wateja
+                </a>
+            </li>
+            <li>
+                <a href="/admin/categories" class="<%= adminPage === 'categories' ? 'active' : '' %>">
+                    <span class="icon">🏷️</span> Aina za Nguo
+                </a>
+            </li>
+            <li>
+                <a href="/admin/settings" class="<%= adminPage === 'settings' ? 'active' : '' %>">
+                    <span class="icon">⚙️</span> Mipangilio
+                </a>
+            </li>
+            <li>
+                <a href="/" target="_blank">
+                    <span class="icon">🌐</span> Tazama Duka
+                </a>
+            </li>
+        </ul>
+
+        <!-- LOGOUT -->
+        <div class="sidebar-logout">
+            <a href="/auth/logout">
+                🚪 Toka kwenye Mfumo
+            </a>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="admin-main">
+        <!-- Maudhui ya kila ukurasa wa admin yanaingia hapa -->
