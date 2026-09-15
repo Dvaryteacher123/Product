@@ -1,0 +1,739 @@
+<%- include('../partials/header', { title: 'Duka' }) %>
+<%- include('../partials/navbar', { currentPage: 'shop' }) %>
+
+<main>
+
+<!-- ================== SHOP STYLES ================== -->
+<style>
+    /* ===== PAGE HEADER ===== */
+    .shop-header {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        padding: 45px 16px;
+        text-align: center;
+    }
+
+    .shop-header h1 {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+    }
+
+    .shop-header h1 span { color: var(--accent); }
+
+    .shop-header p {
+        font-size: 15px;
+        color: #d1d5db;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px 16px 0;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .breadcrumb a:hover { color: var(--accent); }
+
+    /* ===== SHOP LAYOUT ===== */
+    .shop-layout {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 16px 60px;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 28px;
+    }
+
+    /* ===== SIDEBAR FILTERS ===== */
+    .filters {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        height: fit-content;
+        position: sticky;
+        top: 90px;
+    }
+
+    .filters h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .filter-group {
+        margin-bottom: 24px;
+    }
+
+    .filter-group:last-child { margin-bottom: 0; }
+
+    .filter-group h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .filter-list li a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--gray);
+        transition: all 0.2s ease;
+    }
+
+    .filter-list li a:hover {
+        background: var(--light);
+        color: var(--accent);
+    }
+
+    .filter-list li a.active {
+        background: var(--accent);
+        color: var(--white);
+        font-weight: 600;
+    }
+
+    .filter-list li a .count {
+        font-size: 11.5px;
+        background: var(--light);
+        padding: 2px 8px;
+        border-radius: 20px;
+        color: var(--gray);
+    }
+
+    .filter-list li a.active .count {
+        background: rgba(255, 255, 255, 0.25);
+        color: var(--white);
+    }
+
+    /* ===== PRICE INPUTS ===== */
+    .price-inputs {
+        display: flex;
+        gap: 8px;
+    }
+
+    .price-inputs input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    .price-inputs input:focus {
+        border-color: var(--accent);
+    }
+
+    .price-apply {
+        width: 100%;
+        margin-top: 10px;
+        padding: 9px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .price-apply:hover { background: var(--accent); }
+
+    /* ===== TOOLBAR ===== */
+    .shop-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .results-count {
+        font-size: 14px;
+        color: var(--gray);
+    }
+
+    .results-count strong {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sort-select {
+        padding: 9px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 13.5px;
+        background: var(--white);
+        cursor: pointer;
+    }
+
+    .sort-select:focus { border-color: var(--accent); }
+
+    .filter-toggle-mobile {
+        display: none;
+        padding: 9px 16px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+    }
+
+    /* ===== PRODUCTS GRID ===== */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .product-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+
+    .product-image {
+        height: 220px;
+        background: var(--light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image img { transform: scale(1.06); }
+
+    .product-image .placeholder {
+        font-size: 68px;
+        color: #9ca3af;
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--accent);
+        color: var(--white);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    .product-badge.sale { background: var(--danger); }
+    .product-badge.new { background: var(--success); }
+
+    .product-info {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-category {
+        font-size: 11.5px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 8px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-rating {
+        font-size: 12.5px;
+        color: #f59e0b;
+        margin-bottom: 10px;
+    }
+
+    .product-rating span { color: var(--gray); margin-left: 4px; }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: auto;
+        margin-bottom: 12px;
+    }
+
+    .price-now {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .price-old {
+        font-size: 13px;
+        color: var(--gray);
+        text-decoration: line-through;
+    }
+
+    .product-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        text-align: center;
+        transition: background 0.2s ease;
+    }
+
+    .product-btn:hover { background: var(--accent); }
+
+    /* ===== LOADING / EMPTY ===== */
+    .loading-state,
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray);
+    }
+
+    .loading-state .spinner { margin: 0 auto 16px; }
+
+    .empty-state .icon {
+        font-size: 60px;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .empty-state h3 {
+        font-size: 18px;
+        color: var(--primary);
+        margin-bottom: 6px;
+    }
+
+    /* ===== NO RESULTS IN SIDEBAR ===== */
+    .no-categories {
+        font-size: 13px;
+        color: var(--gray);
+        padding: 6px 0;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+        .shop-layout { grid-template-columns: 1fr; }
+        .filters {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            border-radius: 0;
+            z-index: 1200;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+        .filters.open { transform: translateX(0); }
+        .filter-toggle-mobile { display: block; }
+        .products-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+        .shop-header h1 { font-size: 24px; }
+        .shop-header p { font-size: 14px; }
+        .products-grid { grid-template-columns: 1fr; }
+        .toolbar-right { width: 100%; justify-content: space-between; }
+    }
+
+    /* ===== OVERLAY ===== */
+    .filter-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1150;
+    }
+
+    .filter-overlay.show { display: block; }
+</style>
+
+<!-- ================== SHOP HEADER ================== -->
+<section class="shop-header">
+    <h1>Duka Letu la <span>Nguo</span></h1>
+    <p>Chagua kutoka kwa bidhaa zetu nyingi — nguo, viatu, na vifaa vya kisasa.</p>
+</section>
+
+<!-- ================== BREADCRUMB ================== -->
+<div class="breadcrumb">
+    <a href="/">Nyumbani</a> / <span>Duka</span>
+</div>
+
+<!-- ================== OVERLAY ================== -->
+<div class="filter-overlay" id="filterOverlay" onclick="toggleFilters()"></div>
+
+<!-- ================== SHOP LAYOUT ================== -->
+<div class="shop-layout">
+
+    <!-- ===== SIDEBAR FILTERS ===== -->
+    <aside class="filters" id="filtersSidebar">
+        <h3>🔍 Chuja Bidhaa</h3>
+
+        <!-- CATEGORY FILTER -->
+        <div class="filter-group">
+            <h4>Aina za Nguo</h4>
+            <ul class="filter-list" id="categoryList">
+                <li><span class="no-categories">Inapakia...</span></li>
+            </ul>
+        </div>
+
+        <!-- PRICE FILTER -->
+        <div class="filter-group">
+            <h4>Bei (TZS)</h4>
+            <div class="price-inputs">
+                <input type="number" id="minPrice" placeholder="Kuanzia" min="0">
+                <input type="number" id="maxPrice" placeholder="Hadi" min="0">
+            </div>
+            <button class="price-apply" onclick="applyPriceFilter()">Chuja kwa Bei</button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div>
+
+        <!-- TOOLBAR -->
+        <div class="shop-toolbar">
+            <div class="results-count" id="resultsCount">
+                Bidhaa: <strong>—</strong>
+            </div>
+            <div class="toolbar-right">
+                <button class="filter-toggle-mobile" onclick="toggleFilters()">⚙️ Chuja</button>
+                <select class="sort-select" id="sortSelect" onchange="applySort()">
+                    <option value="newest">Mpya Kwanza</option>
+                    <option value="price-asc">Bei: Chini → Juu</option>
+                    <option value="price-desc">Bei: Juu → Chini</option>
+                    <option value="name-asc">Jina: A → Z</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- PRODUCTS GRID -->
+        <div class="products-grid" id="productsGrid">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Inapakia bidhaa...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<!-- ================== FIRESTORE: SHOP LOGIC ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs }
+        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== STATE =====
+    let allProducts = [];
+    let filteredProducts = [];
+
+    // ===== READ URL PARAMS =====
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSearch = (urlParams.get('search') || '').toLowerCase().trim();
+    const urlCategory = (urlParams.get('category') || '').toLowerCase().trim();
+
+    let currentCategory = urlCategory;
+    let currentSearch = urlSearch;
+    let currentMin = 0;
+    let currentMax = Infinity;
+    let currentSort = 'newest';
+
+    // ===== FORMAT PRICE =====
+    function formatPrice(value) {
+        const num = Number(value) || 0;
+        return 'TZS ' + num.toLocaleString('en-US');
+    }
+
+    // ===== GET TIMESTAMP =====
+    function getTimestamp(val) {
+        if (!val) return 0;
+        if (typeof val === 'object' && val.seconds) return val.seconds;
+        if (val instanceof Date) return val.getTime() / 1000;
+        return 0;
+    }
+
+    // ===== RENDER CATEGORIES =====
+    function renderCategories() {
+        const list = document.getElementById('categoryList');
+        const counter = {};
+
+        allProducts.forEach(p => {
+            const cat = (p.category || 'Nyingine').toLowerCase();
+            counter[cat] = (counter[cat] || 0) + 1;
+        });
+
+        const categories = Object.keys(counter);
+
+        let html = `
+            <li>
+                <a href="#" data-cat="" class="${currentCategory === '' ? 'active' : ''}">
+                    Zote <span class="count">${allProducts.length}</span>
+                </a>
+            </li>
+        `;
+
+        categories.forEach(cat => {
+            html += `
+                <li>
+                    <a href="#" data-cat="${cat}" class="${currentCategory === cat ? 'active' : ''}">
+                        ${cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        <span class="count">${counter[cat]}</span>
+                    </a>
+                </li>
+            `;
+        });
+
+        list.innerHTML = html;
+
+        // Attach click handlers
+        list.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentCategory = a.dataset.cat || '';
+                renderCategories();
+                applyFilters();
+                if (window.innerWidth <= 1000) toggleFilters();
+            });
+        });
+    }
+
+    // ===== RENDER PRODUCTS =====
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        const countEl = document.getElementById('resultsCount');
+
+        if (filteredProducts.length === 0) {
+            countEl.innerHTML = `Bidhaa: <strong>0</strong>`;
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <span class="icon">🔍</span>
+                    <h3>Hakuna bidhaa zilizopatikana</h3>
+                    <p>Jaribu kubadilisha vigezo vya utafutaji au chujio.</p>
+                </div>
+            `;
+            return;
+        }
+
+        countEl.innerHTML = `Bidhaa: <strong>${filteredProducts.length}</strong>`;
+
+        let html = '';
+        filteredProducts.forEach(({ id, data: p }) => {
+            const imageHtml = p.image
+                ? `<img src="${p.image}" alt="${p.name || 'Bidhaa'}" loading="lazy">`
+                : `<div class="placeholder">👕</div>`;
+
+            let badgeHtml = '';
+            if (p.badge === 'sale') badgeHtml = `<span class="product-badge sale">Punguzo</span>`;
+            else if (p.badge === 'new') badgeHtml = `<span class="product-badge new">Mpya</span>`;
+            else if (p.isNew) badgeHtml = `<span class="product-badge new">Mpya</span>`;
+
+            const oldPriceHtml = (p.oldPrice && Number(p.oldPrice) > 0)
+                ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>`
+                : '';
+
+            const rating = Number(p.rating) || 0;
+            const reviews = Number(p.reviews) || 0;
+
+            html += `
+                <div class="product-card">
+                    <a href="/product/${id}" class="product-image">
+                        ${imageHtml}
+                        ${badgeHtml}
+                    </a>
+                    <div class="product-info">
+                        <div class="product-category">${p.category || 'Nguo'}</div>
+                        <a href="/product/${id}" class="product-name">${p.name || 'Bidhaa'}</a>
+                        <div class="product-rating">
+                            ${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}
+                            <span>(${reviews})</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="price-now">${formatPrice(p.price)}</span>
+                            ${oldPriceHtml}
+                        </div>
+                        <a href="/product/${id}" class="product-btn">Ona Bidhaa</a>
+                    </div>
+                </div>
+            `;
+        });
+
+        grid.innerHTML = html;
+    }
+
+    // ===== APPLY FILTERS =====
+    function applyFilters() {
+        filteredProducts = allProducts.filter(({ data: p }) => {
+            // Category filter
+            if (currentCategory) {
+                const cat = (p.category || '').toLowerCase();
+                if (cat !== currentCategory) return false;
+            }
+
+            // Search filter
+            if (currentSearch) {
+                const name = (p.name || '').toLowerCase();
+                const cat = (p.category || '').toLowerCase();
+                const desc = (p.description || '').toLowerCase();
+                if (!name.includes(currentSearch) &&
+                    !cat.includes(currentSearch) &&
+                    !desc.includes(currentSearch)) return false;
+            }
+
+            // Price filter
+            const price = Number(p.price) || 0;
+            if (price < currentMin) return false;
+            if (price > currentMax) return false;
+
+            return true;
+        });
+
+        applySort();
+    }
+
+    // ===== APPLY SORT =====
+    function applySort() {
+        const sort = document.getElementById('sortSelect').value;
+        currentSort = sort;
+
+        filteredProducts.sort((a, b) => {
+            const pa = a.data, pb = b.data;
+            if (sort === 'price-asc') return (Number(pa.price) || 0) - (Number(pb.price) || 0);
+            if (sort === 'price-desc') return (Number(pb.price) || 0) - (Number(pa.price) || 0);
+            if (sort === 'name-asc') return (pa.name || '').localeCompare(pb.name || '');
+            // newest (default)
+            return getTimestamp(pb.createdAt) - getTimestamp(pa.createdAt);
+        });
+
+        renderProducts();
+    }
+
+    // ===== PRICE FILTER =====
+    window.applyPriceFilter = function () {
+        const min = document.getElementById('minPrice').value;
+        const max = document.getElementById('maxPrice').value;
+        currentMin = min ? Number(min) : 0;
+        currentMax = max ? Number(max) : Infinity;
+        applyFilters();
+    };
+
+    // ===== TOGGLE FILTERS (MOBILE) =====
+    window.toggleFilters = function () {
+        document.getElementById('filtersSidebar').classList.toggle('open');
+        document.getElementById('filterOverlay').classList.toggle('show');
+    };
+
+    // ===== LOAD PRODUCTS FROM FIRESTORE =====
+    async function loadProducts() {
+        const grid = document.getElementById('productsGrid');
+        try {
+            const snap = await getDocs(collection(db, 'products'));
+            allProducts = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+
+            // Onyesha search term kama ipo
+            if (currentSearch) {
+                const countEl = document.getElementById('resultsCount');
+                countEl.innerHTML = `Utafutaji: "<strong>${currentSearch}</strong>"`;
+            }
+
+            renderCategories();
+            applyFilters();
+
+            if (allProducts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="icon">📦</span>
+                        <h3>Hakuna bidhaa bado</h3>
+                        <p>Bidhaa zitaonekana hapa mara admin atakapoongeza.</p>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error('Kosa la kupakia bidhaa:', err);
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <span class="icon">⚠️</span>
+                    <h3>Imeshindikana kupakia bidhaa</h3>
+                    <p>${err.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    loadProducts();
+</script>
+
+<%- include('../partials/footer') %>
