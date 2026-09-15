@@ -1,0 +1,314 @@
+<!-- ================== NAVBAR ================== -->
+<style>
+    /* ===== TOP BAR ===== */
+    .top-bar {
+        background: var(--primary);
+        color: var(--white);
+        font-size: 13px;
+        padding: 8px 0;
+        text-align: center;
+    }
+
+    .top-bar span {
+        color: var(--accent);
+        font-weight: 700;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .navbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 20px;
+    }
+
+    /* ===== LOGO ===== */
+    .logo {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .logo span {
+        color: var(--accent);
+    }
+
+    /* ===== MENU ===== */
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        list-style: none;
+    }
+
+    .nav-menu a {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--primary);
+        position: relative;
+        padding: 4px 0;
+        transition: color 0.2s ease;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: var(--accent);
+    }
+
+    .nav-menu a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.25s ease;
+    }
+
+    .nav-menu a:hover::after,
+    .nav-menu a.active::after {
+        width: 100%;
+    }
+
+    /* ===== SEARCH ===== */
+    .nav-search {
+        flex: 1;
+        max-width: 340px;
+        position: relative;
+    }
+
+    .nav-search input {
+        width: 100%;
+        padding: 9px 40px 9px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 30px;
+        font-size: 14px;
+        background: var(--light);
+        transition: border 0.2s ease;
+    }
+
+    .nav-search input:focus {
+        border-color: var(--accent);
+        background: var(--white);
+    }
+
+    .nav-search button {
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--accent);
+        color: var(--white);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    /* ===== ACTIONS ===== */
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .icon-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--light);
+        color: var(--primary);
+        font-size: 17px;
+        transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+        background: var(--accent);
+        color: var(--white);
+    }
+
+    .icon-badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        background: var(--accent);
+        color: var(--white);
+        font-size: 10px;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--white);
+    }
+
+    .icon-btn:hover .icon-badge {
+        background: var(--primary);
+    }
+
+    /* ===== MOBILE MENU TOGGLE ===== */
+    .menu-toggle {
+        display: none;
+        background: var(--light);
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        font-size: 20px;
+        color: var(--primary);
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ===== MOBILE MENU ===== */
+    .mobile-menu {
+        display: none;
+        flex-direction: column;
+        background: var(--white);
+        border-top: 1px solid var(--border);
+        padding: 12px 16px;
+        gap: 4px;
+    }
+
+    .mobile-menu.open {
+        display: flex;
+    }
+
+    .mobile-menu a {
+        padding: 12px 10px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 15px;
+        transition: background 0.2s ease;
+    }
+
+    .mobile-menu a:hover {
+        background: var(--light);
+        color: var(--accent);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .nav-menu,
+        .nav-search {
+            display: none;
+        }
+
+        .menu-toggle {
+            display: flex;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .logo { font-size: 18px; }
+        .nav-actions { gap: 8px; }
+        .icon-btn { width: 36px; height: 36px; font-size: 15px; }
+    }
+</style>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+    🚚 Usafirishaji <span>BURE</span> kwa oda zaidi ya TZS 100,000 — Karibu!
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="navbar-inner">
+
+        <!-- LOGO -->
+        <a href="/" class="logo">
+            👕 Clothing<span>Store</span>
+        </a>
+
+        <!-- DESKTOP MENU -->
+        <ul class="nav-menu">
+            <li><a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">Nyumbani</a></li>
+            <li><a href="/shop" class="<%= currentPage === 'shop' ? 'active' : '' %>">Duka</a></li>
+            <li><a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">Kuhusu Sisi</a></li>
+            <li><a href="/contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">Wasiliana</a></li>
+        </ul>
+
+        <!-- SEARCH -->
+        <form class="nav-search" action="/shop" method="GET">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Tafuta nguo, viatu, kofia..."
+                value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            >
+            <button type="submit">🔍</button>
+        </form>
+
+        <!-- ACTIONS -->
+        <div class="nav-actions">
+
+            <!-- CART -->
+            <a href="/cart" class="icon-btn" title="Kikapu">
+                🛒
+                <span class="icon-badge"><%= typeof cartCount !== 'undefined' ? cartCount : 0 %></span>
+            </a>
+
+            <!-- ACCOUNT / LOGIN -->
+            <% if (typeof user !== 'undefined' && user) { %>
+                <a href="/admin/dashboard" class="icon-btn" title="Akaunti yangu">
+                    👤
+                </a>
+                <a href="/auth/logout" class="btn btn-outline" style="padding: 8px 14px; font-size: 13px;">
+                    Toka
+                </a>
+            <% } else { %>
+                <a href="/auth" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                    Ingia
+                </a>
+            <% } %>
+
+            <!-- MOBILE TOGGLE -->
+            <button class="menu-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+                ☰
+            </button>
+        </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/">🏠 Nyumbani</a>
+        <a href="/shop">🛍️ Duka</a>
+        <a href="/about">ℹ️ Kuhusu Sisi</a>
+        <a href="/contact">📧 Wasiliana</a>
+        <a href="/cart">🛒 Kikapu</a>
+
+        <form action="/shop" method="GET" style="margin-top: 10px;">
+            <input 
+                type="text" 
+                name="search" 
+                placeholder="Tafuta bidhaa..."
+                style="width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px;"
+            >
+        </form>
+    </div>
+</nav>
