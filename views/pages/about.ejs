@@ -1,0 +1,635 @@
+<%- include('../partials/header', { title: 'Kuhusu Sisi' }) %>
+<%- include('../partials/navbar', { currentPage: 'about' }) %>
+
+<main>
+
+<!-- ================== ABOUT STYLES ================== -->
+<style>
+    /* ===== HERO ===== */
+    .about-hero {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        padding: 70px 16px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        left: -100px;
+        bottom: -100px;
+        width: 350px;
+        height: 350px;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.12;
+    }
+
+    .about-hero-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-hero .tag {
+        display: inline-block;
+        background: rgba(255, 107, 0, 0.15);
+        color: var(--accent);
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        letter-spacing: 0.5px;
+    }
+
+    .about-hero h1 {
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+    }
+
+    .about-hero h1 span { color: var(--accent); }
+
+    .about-hero p {
+        font-size: 16px;
+        color: #d1d5db;
+        max-width: 620px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px 16px 0;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .breadcrumb a:hover { color: var(--accent); }
+
+    /* ===== SECTION ===== */
+    .section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 16px;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-title .tag {
+        display: inline-block;
+        background: rgba(255, 107, 0, 0.1);
+        color: var(--accent);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.6px;
+        margin-bottom: 10px;
+    }
+
+    .section-title h2 span { color: var(--accent); }
+
+    .section-title p {
+        font-size: 15px;
+        color: var(--gray);
+        max-width: 620px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* ===== STORY ===== */
+    .story {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        align-items: center;
+    }
+
+    .story-visual {
+        background: linear-gradient(135deg, var(--accent) 0%, #ff8c33 100%);
+        border-radius: 20px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 180px;
+        color: var(--white);
+        box-shadow: 0 25px 60px rgba(255, 107, 0, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .story-visual::after {
+        content: "";
+        position: absolute;
+        inset: 20px;
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
+    }
+
+    .story-text h3 {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 18px;
+        letter-spacing: -0.4px;
+    }
+
+    .story-text p {
+        font-size: 15px;
+        color: #4b5563;
+        line-height: 1.85;
+        margin-bottom: 16px;
+    }
+
+    .story-text p strong {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .story-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 26px;
+        padding-top: 26px;
+        border-top: 1px solid var(--border);
+    }
+
+    .story-stat h4 {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--accent);
+        letter-spacing: -0.5px;
+    }
+
+    .story-stat p {
+        font-size: 12.5px;
+        color: var(--gray);
+        margin: 0;
+    }
+
+    /* ===== VALUES ===== */
+    .values {
+        background: var(--light);
+        padding: 70px 0;
+    }
+
+    .values-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .value-card {
+        background: var(--white);
+        border-radius: 14px;
+        padding: 28px 22px;
+        text-align: center;
+        transition: all 0.25s ease;
+        border: 1px solid var(--border);
+    }
+
+    .value-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+
+    .value-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, rgba(255, 107, 0, 0.12), rgba(255, 107, 0, 0.05));
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 18px;
+    }
+
+    .value-card h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 8px;
+    }
+
+    .value-card p {
+        font-size: 13.5px;
+        color: var(--gray);
+        line-height: 1.65;
+    }
+
+    /* ===== WHY US ===== */
+    .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .why-item {
+        display: flex;
+        gap: 16px;
+        padding: 22px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        transition: all 0.25s ease;
+    }
+
+    .why-item:hover {
+        border-color: var(--accent);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .why-num {
+        width: 42px;
+        height: 42px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .why-item:hover .why-num {
+        background: var(--accent);
+    }
+
+    .why-info h4 {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 6px;
+    }
+
+    .why-info p {
+        font-size: 13.5px;
+        color: var(--gray);
+        line-height: 1.6;
+    }
+
+    /* ===== TEAM ===== */
+    .team {
+        background: var(--light);
+        padding: 70px 0;
+    }
+
+    .team-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+    }
+
+    .team-card {
+        background: var(--white);
+        border-radius: 14px;
+        padding: 28px 20px;
+        text-align: center;
+        transition: all 0.25s ease;
+        border: 1px solid var(--border);
+    }
+
+    .team-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .team-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #ff8c33);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        font-weight: 800;
+        margin: 0 auto 16px;
+        letter-spacing: -1px;
+    }
+
+    .team-card h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 4px;
+    }
+
+    .team-card p {
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .team-card .role {
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 12.5px;
+        margin-bottom: 8px;
+    }
+
+    /* ===== CTA ===== */
+    .about-cta {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 16px;
+    }
+
+    .about-cta-inner {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        border-radius: 20px;
+        padding: 55px 45px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-cta-inner::after {
+        content: "";
+        position: absolute;
+        right: -80px;
+        top: -80px;
+        width: 300px;
+        height: 300px;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.15;
+    }
+
+    .about-cta-inner h2 {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        letter-spacing: -0.6px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-cta-inner h2 span { color: var(--accent); }
+
+    .about-cta-inner p {
+        font-size: 15px;
+        color: #d1d5db;
+        max-width: 520px;
+        margin: 0 auto 26px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-cta-inner .btn {
+        position: relative;
+        z-index: 2;
+        padding: 14px 34px;
+        font-size: 15px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+        .story { grid-template-columns: 1fr; gap: 30px; }
+        .story-visual { max-width: 340px; margin: 0 auto; font-size: 130px; }
+        .values-grid { grid-template-columns: repeat(2, 1fr); }
+        .why-grid { grid-template-columns: repeat(2, 1fr); }
+        .team-grid { grid-template-columns: repeat(2, 1fr); }
+        .about-hero h1 { font-size: 32px; }
+    }
+
+    @media (max-width: 600px) {
+        .about-hero { padding: 50px 16px; }
+        .about-hero h1 { font-size: 24px; }
+        .section { padding: 40px 16px; }
+        .section-title h2 { font-size: 22px; }
+        .values-grid,
+        .why-grid,
+        .team-grid { grid-template-columns: 1fr; }
+        .about-cta-inner { padding: 35px 22px; }
+        .about-cta-inner h2 { font-size: 22px; }
+        .story-stats { grid-template-columns: 1fr 1fr; }
+        .story-text h3 { font-size: 20px; }
+    }
+</style>
+
+<!-- ================== HERO ================== -->
+<section class="about-hero">
+    <div class="about-hero-inner">
+        <span class="tag">✨ Kuhusu Sisi</span>
+        <h1>Tunafanya Ununuzi Uwe <span>Rahisi</span> Tanzania</h1>
+        <p>
+            Sisi ni duka la nguo la kisasa linalowaunganisha wateja na bidhaa bora
+            za mitindo kwa bei nafuu, huduma ya haraka, na uaminifu wa hali ya juu.
+        </p>
+    </div>
+</section>
+
+<!-- ================== BREADCRUMB ================== -->
+<div class="breadcrumb">
+    <a href="/">Nyumbani</a> / <span>Kuhusu Sisi</span>
+</div>
+
+<!-- ================== STORY ================== -->
+<section class="section">
+    <div class="story">
+        <div class="story-visual">👕</div>
+        <div class="story-text">
+            <h3>Safari Yetu ya Kuwavisha Wateja</h3>
+            <p>
+                <strong>ClothingStore</strong> ilianzishwa kwa lengo moja — kuwapa Watanzania
+                urahisi wa kupata nguo za kisasa bila kuhangaika. Tulianza kama duka dogo
+                la mtandaoni, lakini leo hii tunahudumia maelfu ya wateja kote nchini.
+            </p>
+            <p>
+                Tunachagua bidhaa zetu kwa uangalifu mkubwa — kutoka kwa wazalishaji
+                wa kuaminika, kwa ubora wa hali ya juu, na kwa bei ambazo zinawafikia kila mtu.
+                Tunaamini kila mtu anastahili kuvaa vizuri.
+            </p>
+            <p>
+                Kila oda tunayoipokea ni ahadi yetu kwako — kukufikishia bidhaa zako
+                kwa haraka, salama, na kwa furaha.
+            </p>
+
+            <div class="story-stats">
+                <div class="story-stat">
+                    <h4>5,000+</h4>
+                    <p>Wateja Walioridhika</p>
+                </div>
+                <div class="story-stat">
+                    <h4>500+</h4>
+                    <p>Aina za Bidhaa</p>
+                </div>
+                <div class="story-stat">
+                    <h4>98%</h4>
+                    <p>Kurudi Tena</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================== VALUES ================== -->
+<section class="values">
+    <div class="section-title">
+        <span class="tag">Maadili Yetu</span>
+        <h2>Kile <span>Tunachokiamini</span></h2>
+        <p>Maadili haya yanaongoza kila tunachofanya — kutoka kwa bidhaa hadi huduma kwa mteja.</p>
+    </div>
+
+    <div class="values-grid">
+        <div class="value-card">
+            <div class="value-icon">🎯</div>
+            <h4>Ubora wa Juu</h4>
+            <p>Tunachagua bidhaa bora pekee kwa ajili ya wateja wetu wote.</p>
+        </div>
+        <div class="value-card">
+            <div class="value-icon">⚡</div>
+            <h4>Huduma ya Haraka</h4>
+            <p>Tunahakikisha oda zako zinafika kwa wakati uliopangwa.</p>
+        </div>
+        <div class="value-card">
+            <div class="value-icon">🤝</div>
+            <h4>Uaminifu</h4>
+            <p>Tunatoa bei za uwazi, bila gharama za kificho.</p>
+        </div>
+        <div class="value-card">
+            <div class="value-icon">💎</div>
+            <h4>Wateja Kwanza</h4>
+            <p>Kila maamuzi tunayofanya yanazingatia manufaa ya mteja.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ================== WHY US ================== -->
+<section class="section">
+    <div class="section-title">
+        <span class="tag">Kwa Nini Sisi</span>
+        <h2>Kwa Nini Uchague <span>ClothingStore</span>?</h2>
+        <p>Hizi ni sababu za msingi zinazotufanya kuwa chaguo la kwanza kwa maelfu ya Watanzania.</p>
+    </div>
+
+    <div class="why-grid">
+        <div class="why-item">
+            <div class="why-num">01</div>
+            <div class="why-info">
+                <h4>Bidhaa za Kisasa</h4>
+                <p>Tunafuatilia mitindo ya hivi karibuni ili uweze kuvaa vizuri kila wakati.</p>
+            </div>
+        </div>
+        <div class="why-item">
+            <div class="why-num">02</div>
+            <div class="why-info">
+                <h4>Bei Nafuu</h4>
+                <p>Tunatoa bidhaa kwa bei rafiki bila kupunguza ubora.</p>
+            </div>
+        </div>
+        <div class="why-item">
+            <div class="why-num">03</div>
+            <div class="why-info">
+                <h4>Usafirishaji Bure</h4>
+                <p>Oda zaidi ya TZS 100,000 unapata usafirishaji wa bure kote Tanzania.</p>
+            </div>
+        </div>
+        <div class="why-item">
+            <div class="why-num">04</div>
+            <div class="why-info">
+                <h4>Malipo ya Urahisi</h4>
+                <p>Lipa kwa Cash on Delivery, M-Pesa, Tigo Pesa, au Airtel Money.</p>
+            </div>
+        </div>
+        <div class="why-item">
+            <div class="why-num">05</div>
+            <div class="why-info">
+                <h4>Kubadilisha Bidhaa</h4>
+                <p>Unaweza kubadilisha bidhaa ndani ya siku 7 tangu kuipokea.</p>
+            </div>
+        </div>
+        <div class="why-item">
+            <div class="why-num">06</div>
+            <div class="why-info">
+                <h4>Msaada wa Muda Wote</h4>
+                <p>Timu yetu ya huduma ipo kwa simu na WhatsApp masaa 24/7.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================== TEAM ================== -->
+<section class="team">
+    <div class="section-title">
+        <span class="tag">Timu Yetu</span>
+        <h2>Watu <span>Wanaotuhusu</span></h2>
+        <p>Timu ndogo ya watu wanaojitolea kuhakikisha kila oda inafanikiwa.</p>
+    </div>
+
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-avatar">JH</div>
+            <h4>Juma Hamisi</h4>
+            <p class="role">Mwanzilishi & CEO</p>
+            <p>Ana uzoefu wa miaka 8 katika biashara ya mtandaoni.</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">AM</div>
+            <h4>Amina Mwinyi</h4>
+            <p class="role">Meneja wa Bidhaa</p>
+            <p>Anachagua kila bidhaa kwa uangalifu mkubwa wa hali ya juu.</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">DK</div>
+            <h4>David Kimaro</h4>
+            <p class="role">Meneja wa Huduma kwa Mteja</p>
+            <p>Anahakikisha kila mteja anapata msaada wa haraka.</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">ZM</div>
+            <h4>Zainab Msuya</h4>
+            <p class="role">Meneja wa Usafirishaji</p>
+            <p>Anasimamia oda zote hadi zinafika kwa wateja.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ================== CTA ================== -->
+<div class="about-cta">
+    <div class="about-cta-inner">
+        <h2>Uko Tayari <span>Kuanza</span>?</h2>
+        <p>Karibu uone bidhaa zetu za kisasa na upate ofa maalum leo hii.</p>
+        <a href="/shop" class="btn btn-primary">🛍️ Anza Kununua</a>
+    </div>
+</div>
+
+</main>
+
+<%- include('../partials/footer') %>
