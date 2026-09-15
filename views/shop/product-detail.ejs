@@ -1,0 +1,1096 @@
+<%- include('../partials/header', { title: 'Bidhaa' }) %>
+<%- include('../partials/navbar', { currentPage: 'shop' }) %>
+
+<main>
+
+<!-- ================== PRODUCT DETAIL STYLES ================== -->
+<style>
+    /* ===== PAGE HEADER ===== */
+    .pd-header {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        padding: 30px 16px;
+    }
+
+    .pd-header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        font-size: 13px;
+        color: #d1d5db;
+    }
+
+    .pd-header-inner a:hover { color: var(--accent); }
+
+    /* ===== PRODUCT LAYOUT ===== */
+    .pd-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+    }
+
+    /* ===== GALLERY ===== */
+    .pd-gallery {
+        position: sticky;
+        top: 90px;
+        align-self: start;
+    }
+
+    .pd-main-image {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: var(--light);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        border: 1px solid var(--border);
+    }
+
+    .pd-main-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pd-main-image .placeholder {
+        font-size: 180px;
+        color: #9ca3af;
+    }
+
+    .pd-thumbnails {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .pd-thumb {
+        aspect-ratio: 1 / 1;
+        background: var(--light);
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.2s ease;
+    }
+
+    .pd-thumb.active { border-color: var(--accent); }
+
+    .pd-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pd-thumb .placeholder {
+        font-size: 34px;
+        color: #9ca3af;
+    }
+
+    /* ===== INFO ===== */
+    .pd-info {
+        padding-top: 6px;
+    }
+
+    .pd-badges {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+
+    .pd-badge {
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .pd-badge.sale { background: #fee2e2; color: #991b1b; }
+    .pd-badge.new { background: #d1fae5; color: #065f46; }
+    .pd-badge.stock { background: #d1fae5; color: #065f46; }
+    .pd-badge.out { background: #fee2e2; color: #991b1b; }
+
+    .pd-category {
+        font-size: 12.5px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 10px;
+    }
+
+    .pd-title {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1.2;
+        margin-bottom: 14px;
+        letter-spacing: -0.6px;
+    }
+
+    .pd-rating {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        font-size: 14px;
+    }
+
+    .pd-rating .stars { color: #f59e0b; font-size: 16px; }
+    .pd-rating .count { color: var(--gray); }
+
+    /* ===== PRICE ===== */
+    .pd-price {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+        padding: 16px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .pd-price-now {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--accent);
+    }
+
+    .pd-price-old {
+        font-size: 17px;
+        color: var(--gray);
+        text-decoration: line-through;
+    }
+
+    .pd-discount {
+        background: var(--danger);
+        color: var(--white);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    /* ===== DESCRIPTION ===== */
+    .pd-description {
+        font-size: 15px;
+        color: #4b5563;
+        line-height: 1.7;
+        margin-bottom: 24px;
+    }
+
+    /* ===== OPTIONS ===== */
+    .pd-option {
+        margin-bottom: 22px;
+    }
+
+    .pd-option-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .pd-option-label span:last-child {
+        text-transform: none;
+        font-weight: 500;
+        color: var(--gray);
+        letter-spacing: 0;
+    }
+
+    .pd-sizes {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .pd-size-btn {
+        min-width: 48px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--primary);
+        transition: all 0.2s ease;
+    }
+
+    .pd-size-btn:hover {
+        border-color: var(--primary);
+    }
+
+    .pd-size-btn.active {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--white);
+    }
+
+    .pd-colors {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .pd-color-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        position: relative;
+    }
+
+    .pd-color-btn:hover { transform: scale(1.08); }
+
+    .pd-color-btn.active {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+    }
+
+    /* ===== QUANTITY ===== */
+    .pd-qty-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .pd-qty {
+        display: flex;
+        align-items: center;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .pd-qty button {
+        width: 40px;
+        height: 44px;
+        background: var(--white);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary);
+        transition: background 0.2s ease;
+    }
+
+    .pd-qty button:hover {
+        background: var(--light);
+    }
+
+    .pd-qty input {
+        width: 55px;
+        height: 44px;
+        text-align: center;
+        border: none;
+        border-left: 1.5px solid var(--border);
+        border-right: 1.5px solid var(--border);
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    /* ===== ACTIONS ===== */
+    .pd-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .pd-actions .btn {
+        flex: 1;
+        min-width: 160px;
+        padding: 15px 20px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .pd-actions .btn-cart {
+        background: var(--white);
+        border: 2px solid var(--primary);
+        color: var(--primary);
+    }
+
+    .pd-actions .btn-cart:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    .pd-actions .btn-buy {
+        background: var(--accent);
+        color: var(--white);
+        border: 2px solid var(--accent);
+    }
+
+    .pd-actions .btn-buy:hover {
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
+    }
+
+    /* ===== META ===== */
+    .pd-meta {
+        border-top: 1px solid var(--border);
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pd-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--gray);
+    }
+
+    .pd-meta-item span:first-child {
+        color: var(--accent);
+        font-size: 16px;
+    }
+
+    .pd-meta-item strong {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    /* ===== RELATED ===== */
+    .pd-related {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 16px 20px;
+    }
+
+    .pd-related h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 24px;
+        letter-spacing: -0.5px;
+    }
+
+    .pd-related h2 span { color: var(--accent); }
+
+    .pd-related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    /* ===== PRODUCT CARD (REUSE) ===== */
+    .product-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+
+    .product-image {
+        height: 200px;
+        background: var(--light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image img { transform: scale(1.06); }
+
+    .product-image .placeholder { font-size: 64px; color: #9ca3af; }
+
+    .product-info {
+        padding: 14px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-category {
+        font-size: 11px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 6px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .price-now {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .price-old {
+        font-size: 12px;
+        color: var(--gray);
+        text-decoration: line-through;
+    }
+
+    /* ===== LOADING / EMPTY ===== */
+    .pd-loading {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 100px 16px;
+        text-align: center;
+        color: var(--gray);
+    }
+
+    .pd-loading .spinner {
+        margin: 0 auto 16px;
+    }
+
+    .pd-error {
+        max-width: 600px;
+        margin: 80px auto;
+        padding: 50px 24px;
+        text-align: center;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+    }
+
+    .pd-error .icon {
+        font-size: 64px;
+        display: block;
+        margin-bottom: 14px;
+    }
+
+    .pd-error h2 {
+        font-size: 22px;
+        color: var(--primary);
+        margin-bottom: 8px;
+    }
+
+    .pd-error p {
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--primary);
+        color: var(--white);
+        padding: 14px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.35s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .pd-wrapper {
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 24px 16px;
+        }
+        .pd-gallery { position: static; }
+        .pd-title { font-size: 24px; }
+        .pd-price-now { font-size: 24px; }
+        .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
+        .pd-main-image .placeholder { font-size: 120px; }
+    }
+
+    @media (max-width: 480px) {
+        .pd-actions .btn { min-width: 100%; }
+        .pd-related-grid { grid-template-columns: 1fr; }
+        .pd-thumbnails { grid-template-columns: repeat(3, 1fr); }
+    }
+</style>
+
+<!-- ================== PRODUCT DETAIL CONTAINER ================== -->
+<div id="pdContainer">
+    <div class="pd-loading">
+        <div class="spinner"></div>
+        <p>Inapakia bidhaa...</p>
+    </div>
+</div>
+
+<!-- ================== RELATED PRODUCTS ================== -->
+<section class="pd-related" id="relatedSection" style="display:none;">
+    <h2>Bidhaa <span>Zinazofanana</span></h2>
+    <div class="pd-related-grid" id="relatedGrid"></div>
+</section>
+
+</main>
+
+<!-- ================== TOAST ================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ================== FIRESTORE: PRODUCT LOGIC ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        collection,
+        query,
+        where,
+        limit,
+        getDocs,
+        setDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== STATE =====
+    let currentProduct = null;
+    let currentProductId = null;
+    let selectedSize = null;
+    let selectedColor = null;
+    let quantity = 1;
+
+    // ===== GET PRODUCT ID FROM URL =====
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    // URL: /product/{id}
+    currentProductId = pathParts[1] || null;
+
+    // ===== FORMAT PRICE =====
+    function formatPrice(value) {
+        const num = Number(value) || 0;
+        return 'TZS ' + num.toLocaleString('en-US');
+    }
+
+    // ===== GET TIMESTAMP =====
+    function getTimestamp(val) {
+        if (!val) return 0;
+        if (typeof val === 'object' && val.seconds) return val.seconds;
+        if (val instanceof Date) return val.getTime() / 1000;
+        return 0;
+    }
+
+    // ===== SHOW TOAST =====
+    function showToast(msg, type = 'success') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + type;
+        setTimeout(() => {
+            t.className = 'toast ' + type;
+        }, 2800);
+    }
+
+    // ===== GET OR CREATE GUEST ID =====
+    function getGuestId() {
+        let gid = localStorage.getItem('guestId');
+        if (!gid) {
+            gid = 'guest_' + Math.random().toString(36).substring(2, 12) + Date.now();
+            localStorage.setItem('guestId', gid);
+        }
+        return gid;
+    }
+
+    // ===== CALCULATE DISCOUNT =====
+    function calcDiscount(price, oldPrice) {
+        if (!oldPrice || Number(oldPrice) <= Number(price)) return 0;
+        return Math.round(((Number(oldPrice) - Number(price)) / Number(oldPrice)) * 100);
+    }
+
+    // ===== RENDER STARS =====
+    function renderStars(rating) {
+        const r = Math.round(Number(rating) || 0);
+        return '★'.repeat(r) + '☆'.repeat(5 - r);
+    }
+
+    // ===== RENDER PRODUCT =====
+    function renderProduct(p, id) {
+        const container = document.getElementById('pdContainer');
+
+        const images = Array.isArray(p.images) && p.images.length > 0
+            ? p.images
+            : (p.image ? [p.image] : []);
+
+        const mainImage = images[0] || null;
+
+        const imageHtml = mainImage
+            ? `<img src="${mainImage}" alt="${p.name || 'Bidhaa'}" id="mainImage">`
+            : `<div class="placeholder">👕</div>`;
+
+        // Thumbnails
+        let thumbHtml = '';
+        if (images.length > 0) {
+            images.forEach((img, idx) => {
+                thumbHtml += `
+                    <div class="pd-thumb ${idx === 0 ? 'active' : ''}" data-img="${img}">
+                        <img src="${img}" alt="Picha ${idx + 1}">
+                    </div>
+                `;
+            });
+        } else {
+            thumbHtml = `
+                <div class="pd-thumb active"><div class="placeholder">👕</div></div>
+                <div class="pd-thumb"><div class="placeholder">👕</div></div>
+                <div class="pd-thumb"><div class="placeholder">👕</div></div>
+                <div class="pd-thumb"><div class="placeholder">👕</div></div>
+            `;
+        }
+
+        // Badges
+        let badgesHtml = '';
+        const discount = calcDiscount(p.price, p.oldPrice);
+        if (discount > 0) badgesHtml += `<span class="pd-badge sale">-${discount}% Punguzo</span>`;
+        if (p.badge === 'new' || p.isNew) badgesHtml += `<span class="pd-badge new">Mpya</span>`;
+        const stock = Number(p.stock) || 0;
+        if (stock > 0) badgesHtml += `<span class="pd-badge stock">Ipo Dukani</span>`;
+        else badgesHtml += `<span class="pd-badge out">Imeisha</span>`;
+
+        // Price
+        const oldPriceHtml = (p.oldPrice && Number(p.oldPrice) > Number(p.price))
+            ? `<span class="pd-price-old">${formatPrice(p.oldPrice)}</span>
+               <span class="pd-discount">-${discount}%</span>`
+            : '';
+
+        // Sizes
+        let sizeHtml = '';
+        if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+            selectedSize = p.sizes[0];
+            sizeHtml = `
+                <div class="pd-option">
+                    <div class="pd-option-label">
+                        <span>Ukubwa</span>
+                        <span id="sizeLabel">${selectedSize}</span>
+                    </div>
+                    <div class="pd-sizes" id="sizeList">
+                        ${p.sizes.map((s, i) => `
+                            <button class="pd-size-btn ${i === 0 ? 'active' : ''}" data-size="${s}">${s}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Colors
+        let colorHtml = '';
+        if (Array.isArray(p.colors) && p.colors.length > 0) {
+            selectedColor = p.colors[0].name || p.colors[0];
+            colorHtml = `
+                <div class="pd-option">
+                    <div class="pd-option-label">
+                        <span>Rangi</span>
+                        <span id="colorLabel">${selectedColor}</span>
+                    </div>
+                    <div class="pd-colors" id="colorList">
+                        ${p.colors.map((c, i) => {
+                            const name = c.name || c;
+                            const hex = c.hex || c;
+                            return `
+                                <div class="pd-color-btn ${i === 0 ? 'active' : ''}"
+                                     data-color="${name}"
+                                     style="background:${hex};"
+                                     title="${name}"></div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        const rating = Number(p.rating) || 0;
+        const reviews = Number(p.reviews) || 0;
+
+        const isOutOfStock = stock <= 0;
+
+        container.innerHTML = `
+            <div class="pd-header">
+                <div class="pd-header-inner">
+                    <a href="/">Nyumbani</a> / 
+                    <a href="/shop">Duka</a> / 
+                    <a href="/shop?category=${p.category || ''}">${p.category || 'Nguo'}</a> / 
+                    <span>${p.name || 'Bidhaa'}</span>
+                </div>
+            </div>
+
+            <div class="pd-wrapper">
+                <!-- GALLERY -->
+                <div class="pd-gallery">
+                    <div class="pd-main-image">
+                        ${imageHtml}
+                    </div>
+                    <div class="pd-thumbnails" id="thumbnails">
+                        ${thumbHtml}
+                    </div>
+                </div>
+
+                <!-- INFO -->
+                <div class="pd-info">
+                    <div class="pd-badges">${badgesHtml}</div>
+                    <div class="pd-category">${p.category || 'Nguo'}</div>
+                    <h1 class="pd-title">${p.name || 'Bidhaa'}</h1>
+
+                    <div class="pd-rating">
+                        <span class="stars">${renderStars(rating)}</span>
+                        <span class="count">${rating.toFixed(1)} (${reviews} maoni)</span>
+                    </div>
+
+                    <div class="pd-price">
+                        <span class="pd-price-now">${formatPrice(p.price)}</span>
+                        ${oldPriceHtml}
+                    </div>
+
+                    ${p.description ? `<p class="pd-description">${p.description}</p>` : ''}
+
+                    ${sizeHtml}
+                    ${colorHtml}
+
+                    <div class="pd-qty-row">
+                        <div class="pd-option-label" style="margin:0;">
+                            <span>Idadi</span>
+                        </div>
+                        <div class="pd-qty">
+                            <button id="qtyMinus">−</button>
+                            <input type="number" id="qtyInput" value="1" min="1" max="${stock || 99}">
+                            <button id="qtyPlus">+</button>
+                        </div>
+                        <span style="font-size:13px; color:var(--gray);">${stock > 0 ? `Zilizobaki: ${stock}` : 'Imeisha'}</span>
+                    </div>
+
+                    <div class="pd-actions">
+                        <button class="btn btn-cart" id="addToCartBtn" ${isOutOfStock ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                            🛒 Weka Kikapuni
+                        </button>
+                        <button class="btn btn-buy" id="buyNowBtn" ${isOutOfStock ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                            ⚡ Nunua Sasa
+                        </button>
+                    </div>
+
+                    <div class="pd-meta">
+                        <div class="pd-meta-item">
+                            <span>🚚</span>
+                            <span>Usafirishaji: <strong>Bure</strong> kwa oda zaidi ya TZS 100,000</span>
+                        </div>
+                        <div class="pd-meta-item">
+                            <span>💳</span>
+                            <span>Malipo: <strong>Cash on Delivery</strong></span>
+                        </div>
+                        <div class="pd-meta-item">
+                            <span>🔄</span>
+                            <span>Kubadilisha: Siku <strong>7</strong> baada ya kupokea</span>
+                        </div>
+                        <div class="pd-meta-item">
+                            <span>📞</span>
+                            <span>Msaada: <strong>+255 700 000 000</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // ===== EVENT LISTENERS =====
+        attachEvents(p);
+    }
+
+    // ===== ATTACH EVENTS =====
+    function attachEvents(p) {
+        // Thumbnails
+        document.querySelectorAll('.pd-thumb').forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.pd-thumb').forEach(x => x.classList.remove('active'));
+                t.classList.add('active');
+                const img = t.dataset.img;
+                const main = document.getElementById('mainImage');
+                if (img && main) main.src = img;
+            });
+        });
+
+        // Sizes
+        document.querySelectorAll('.pd-size-btn').forEach(b => {
+            b.addEventListener('click', () => {
+                document.querySelectorAll('.pd-size-btn').forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+                selectedSize = b.dataset.size;
+                const lbl = document.getElementById('sizeLabel');
+                if (lbl) lbl.textContent = selectedSize;
+            });
+        });
+
+        // Colors
+        document.querySelectorAll('.pd-color-btn').forEach(b => {
+            b.addEventListener('click', () => {
+                document.querySelectorAll('.pd-color-btn').forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+                selectedColor = b.dataset.color;
+                const lbl = document.getElementById('colorLabel');
+                if (lbl) lbl.textContent = selectedColor;
+            });
+        });
+
+        // Quantity
+        const qtyInput = document.getElementById('qtyInput');
+        const stock = Number(p.stock) || 99;
+
+        document.getElementById('qtyMinus').addEventListener('click', () => {
+            let v = parseInt(qtyInput.value) || 1;
+            if (v > 1) qtyInput.value = v - 1;
+            quantity = parseInt(qtyInput.value);
+        });
+
+        document.getElementById('qtyPlus').addEventListener('click', () => {
+            let v = parseInt(qtyInput.value) || 1;
+            if (v < stock) qtyInput.value = v + 1;
+            quantity = parseInt(qtyInput.value);
+        });
+
+        qtyInput.addEventListener('change', () => {
+            let v = parseInt(qtyInput.value) || 1;
+            if (v < 1) v = 1;
+            if (v > stock) v = stock;
+            qtyInput.value = v;
+            quantity = v;
+        });
+
+        // Add to cart
+        const addBtn = document.getElementById('addToCartBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => addToCart(p, false));
+        }
+
+        // Buy now
+        const buyBtn = document.getElementById('buyNowBtn');
+        if (buyBtn) {
+            buyBtn.addEventListener('click', () => addToCart(p, true));
+        }
+    }
+
+    // ===== ADD TO CART (FIRESTORE) =====
+    async function addToCart(p, buyNow) {
+        try {
+            const guestId = getGuestId();
+            const cartRef = doc(db, 'carts', guestId);
+
+            const snap = await getDoc(cartRef);
+
+            let items = [];
+            if (snap.exists()) {
+                items = snap.data().items || [];
+            }
+
+            // Check if same product+size+color ipo
+            const key = `${currentProductId}_${selectedSize || 'none'}_${selectedColor || 'none'}`;
+            const existingIdx = items.findIndex(i => i.key === key);
+
+            if (existingIdx > -1) {
+                items[existingIdx].quantity += quantity;
+            } else {
+                items.push({
+                    key,
+                    productId: currentProductId,
+                    name: p.name || 'Bidhaa',
+                    price: Number(p.price) || 0,
+                    image: (Array.isArray(p.images) && p.images[0]) || p.image || '',
+                    size: selectedSize || null,
+                    color: selectedColor || null,
+                    quantity: quantity
+                });
+            }
+
+            await setDoc(cartRef, {
+                items,
+                guestId,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            showToast(`✅ Imeongezwa kikapuni (${quantity})`, 'success');
+
+            if (buyNow) {
+                setTimeout(() => window.location.href = '/checkout', 700);
+            }
+
+        } catch (err) {
+            console.error('Kosa la kuweka kikapuni:', err);
+            showToast('❌ Imeshindikana kuweka kikapuni', 'error');
+        }
+    }
+
+    // ===== LOAD RELATED PRODUCTS =====
+    async function loadRelated(category, excludeId) {
+        if (!category) return;
+
+        try {
+            const q = query(
+                collection(db, 'products'),
+                where('category', '==', category),
+                limit(5)
+            );
+
+            const snap = await getDocs(q);
+            const related = snap.docs
+                .map(d => ({ id: d.id, data: d.data() }))
+                .filter(x => x.id !== excludeId)
+                .slice(0, 4);
+
+            if (related.length === 0) return;
+
+            const grid = document.getElementById('relatedGrid');
+            let html = '';
+
+            related.forEach(({ id, data: p }) => {
+                const imageHtml = p.image
+                    ? `<img src="${p.image}" alt="${p.name || 'Bidhaa'}" loading="lazy">`
+                    : `<div class="placeholder">👕</div>`;
+
+                const oldPriceHtml = (p.oldPrice && Number(p.oldPrice) > Number(p.price))
+                    ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>`
+                    : '';
+
+                html += `
+                    <a href="/product/${id}" class="product-card">
+                        <div class="product-image">${imageHtml}</div>
+                        <div class="product-info">
+                            <div class="product-category">${p.category || 'Nguo'}</div>
+                            <div class="product-name">${p.name || 'Bidhaa'}</div>
+                            <div class="product-price">
+                                <span class="price-now">${formatPrice(p.price)}</span>
+                                ${oldPriceHtml}
+                            </div>
+                        </div>
+                    </a>
+                `;
+            });
+
+            grid.innerHTML = html;
+            document.getElementById('relatedSection').style.display = 'block';
+
+        } catch (err) {
+            console.error('Kosa la related products:', err);
+        }
+    }
+
+    // ===== LOAD PRODUCT =====
+    async function loadProduct() {
+        const container = document.getElementById('pdContainer');
+
+        if (!currentProductId) {
+            container.innerHTML = `
+                <div class="pd-error">
+                    <span class="icon">⚠️</span>
+                    <h2>Bidhaa haipatikani</h2>
+                    <p>ID ya bidhaa haijatolewa kwenye URL.</p>
+                    <a href="/shop" class="btn btn-primary">Rudi Dukani</a>
+                </div>
+            `;
+            return;
+        }
+
+        try {
+            const ref = doc(db, 'products', currentProductId);
+            const snap = await getDoc(ref);
+
+            if (!snap.exists()) {
+                container.innerHTML = `
+                    <div class="pd-error">
+                        <span class="icon">🔍</span>
+                        <h2>Bidhaa haipatikani</h2>
+                        <p>Bidhaa uliyoitafuta haipo kwenye mfumo au imeondolewa.</p>
+                        <a href="/shop" class="btn btn-primary">Rudi Dukani</a>
+                    </div>
+                `;
+                return;
+            }
+
+            currentProduct = snap.data();
+            renderProduct(currentProduct, currentProductId);
+
+            // Update title
+            document.title = (currentProduct.name || 'Bidhaa') + ' | Duka la Nguo';
+
+            // Load related
+            loadRelated(currentProduct.category, currentProductId);
+
+        } catch (err) {
+            console.error('Kosa la kupakia bidhaa:', err);
+            container.innerHTML = `
+                <div class="pd-error">
+                    <span class="icon">⚠️</span>
+                    <h2>Imeshindikana kupakia bidhaa</h2>
+                    <p>${err.message}</p>
+                    <a href="/shop" class="btn btn-primary">Rudi Dukani</a>
+                </div>
+            `;
+        }
+    }
+
+    loadProduct();
+</script>
+
+<%- include('../partials/footer') %>
