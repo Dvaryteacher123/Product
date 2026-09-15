@@ -1,0 +1,718 @@
+<%- include('../partials/header', { title: 'Ingia / Jisajili' }) %>
+<%- include('../partials/navbar', { currentPage: 'auth' }) %>
+
+<main>
+
+<!-- ================== AUTH STYLES ================== -->
+<style>
+    /* ===== WRAPPER ===== */
+    .auth-wrapper {
+        min-height: calc(100vh - 200px);
+        background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 16px;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 460px;
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    /* ===== TABS ===== */
+    .auth-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .auth-tab {
+        flex: 1;
+        padding: 18px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--gray);
+        background: var(--light);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border: none;
+        font-family: inherit;
+    }
+
+    .auth-tab:hover { color: var(--primary); }
+
+    .auth-tab.active {
+        background: var(--white);
+        color: var(--primary);
+        border-bottom: 3px solid var(--accent);
+        margin-bottom: -1px;
+    }
+
+    /* ===== FORM AREA ===== */
+    .auth-body {
+        padding: 34px 30px 30px;
+    }
+
+    .auth-title {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .auth-title h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 4px;
+        letter-spacing: -0.4px;
+    }
+
+    .auth-title p {
+        font-size: 13.5px;
+        color: var(--gray);
+    }
+
+    /* ===== FORM ===== */
+    .auth-form {
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .auth-form.active { display: flex; }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 7px;
+    }
+
+    .form-group label .req { color: var(--danger); }
+
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-wrap input {
+        width: 100%;
+        padding: 12px 42px 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--primary);
+        background: var(--white);
+        transition: border-color 0.2s ease;
+        font-family: inherit;
+    }
+
+    .input-wrap input:focus {
+        border-color: var(--accent);
+        outline: none;
+    }
+
+    .input-wrap .icon {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: var(--gray);
+        pointer-events: none;
+    }
+
+    .toggle-pass {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        color: var(--gray);
+        font-size: 15px;
+        cursor: pointer;
+        padding: 4px;
+        pointer-events: auto;
+    }
+
+    .toggle-pass:hover { color: var(--primary); }
+
+    .form-group .error-msg {
+        font-size: 12px;
+        color: var(--danger);
+        margin-top: 4px;
+        display: none;
+    }
+
+    .form-group.error input {
+        border-color: var(--danger);
+    }
+
+    .form-group.error .error-msg { display: block; }
+
+    /* ===== ROW ===== */
+    .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--gray);
+    }
+
+    .form-row label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .form-row input[type="checkbox"] {
+        accent-color: var(--accent);
+        cursor: pointer;
+    }
+
+    .form-row a {
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .form-row a:hover { text-decoration: underline; }
+
+    /* ===== SUBMIT ===== */
+    .auth-submit {
+        width: 100%;
+        padding: 13px;
+        background: var(--accent);
+        color: var(--white);
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        transition: background 0.2s ease;
+        margin-top: 4px;
+    }
+
+    .auth-submit:hover:not(:disabled) {
+        background: var(--accent-hover);
+    }
+
+    .auth-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* ===== DIVIDER ===== */
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 20px 0;
+        color: var(--gray);
+        font-size: 12.5px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ===== GOOGLE BUTTON ===== */
+    .google-btn {
+        width: 100%;
+        padding: 12px;
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
+    .google-btn:hover {
+        border-color: var(--primary);
+        background: var(--light);
+    }
+
+    .google-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .google-btn .g-icon {
+        font-size: 18px;
+        font-weight: 800;
+        color: #4285F4;
+    }
+
+    /* ===== SWITCH LINK ===== */
+    .auth-switch {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 13.5px;
+        color: var(--gray);
+    }
+
+    .auth-switch a {
+        color: var(--accent);
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .auth-switch a:hover { text-decoration: underline; }
+
+    /* ===== ALERT ===== */
+    .auth-alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        margin-bottom: 16px;
+        display: none;
+    }
+
+    .auth-alert.show { display: block; }
+
+    .auth-alert.error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .auth-alert.success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        margin-bottom: 16px;
+        line-height: 1.6;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 500px) {
+        .auth-body { padding: 26px 20px 22px; }
+        .auth-title h2 { font-size: 20px; }
+        .auth-tab { padding: 15px; font-size: 14px; }
+    }
+</style>
+
+<!-- ================== AUTH WRAPPER ================== -->
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <!-- TABS -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">
+                🔑 Ingia
+            </button>
+            <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">
+                ✍️ Jisajili
+            </button>
+        </div>
+
+        <!-- BODY -->
+        <div class="auth-body">
+
+            <!-- ALERT -->
+            <div class="auth-alert" id="authAlert"></div>
+
+            <!-- ================== LOGIN FORM ================== -->
+            <div class="auth-form active" id="formLogin">
+                <div class="auth-title">
+                    <h2>Karibu Tena!</h2>
+                    <p>Ingia ili kuendelea na ununuzi</p>
+                </div>
+
+                <div class="form-group" id="loginEmailGroup">
+                    <label>Barua Pepe <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="email" id="loginEmail" placeholder="Mf. juma@email.com" autocomplete="email">
+                        <span class="icon">📧</span>
+                    </div>
+                    <span class="error-msg">Barua pepe sahihi inahitajika</span>
+                </div>
+
+                <div class="form-group" id="loginPassGroup">
+                    <label>Neno la Siri <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                        <button type="button" class="toggle-pass" onclick="togglePassword('loginPassword', this)">👁️</button>
+                    </div>
+                    <span class="error-msg">Neno la siri linahitajika</span>
+                </div>
+
+                <div class="form-row">
+                    <label>
+                        <input type="checkbox" id="rememberMe">
+                        Nikumbuke
+                    </label>
+                    <a onclick="showAlert('Kubadilisha neno la siri, wasiliana nasi.', 'error')">Umesahau?</a>
+                </div>
+
+                <button class="auth-submit" id="loginBtn" onclick="handleLogin()">
+                    🔑 Ingia
+                </button>
+
+                <div class="auth-divider">au</div>
+
+                <button class="google-btn" id="googleLoginBtn" onclick="handleGoogleLogin()">
+                    <span class="g-icon">G</span>
+                    Ingia na Google
+                </button>
+
+                <div class="auth-switch">
+                    Hauna akaunti?
+                    <a onclick="switchTab('signup')">Jisajili hapa</a>
+                </div>
+            </div>
+
+            <!-- ================== SIGNUP FORM ================== -->
+            <div class="auth-form" id="formSignup">
+                <div class="auth-title">
+                    <h2>Unda Akaunti</h2>
+                    <p>Jisajili ili kuanza kununua kwa urahisi</p>
+                </div>
+
+                <div class="form-group" id="signupNameGroup">
+                    <label>Jina Kamili <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="text" id="signupName" placeholder="Mf. Juma Hamisi" autocomplete="name">
+                        <span class="icon">👤</span>
+                    </div>
+                    <span class="error-msg">Jina linahitajika</span>
+                </div>
+
+                <div class="form-group" id="signupEmailGroup">
+                    <label>Barua Pepe <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="email" id="signupEmail" placeholder="Mf. juma@email.com" autocomplete="email">
+                        <span class="icon">📧</span>
+                    </div>
+                    <span class="error-msg">Barua pepe sahihi inahitajika</span>
+                </div>
+
+                <div class="form-group" id="signupPhoneGroup">
+                    <label>Namba ya Simu (si lazima)</label>
+                    <div class="input-wrap">
+                        <input type="tel" id="signupPhone" placeholder="Mf. 0712 345 678" autocomplete="tel">
+                        <span class="icon">📞</span>
+                    </div>
+                    <span class="error-msg">Namba si sahihi</span>
+                </div>
+
+                <div class="form-group" id="signupPassGroup">
+                    <label>Neno la Siri <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="signupPassword" placeholder="Herufi 6 au zaidi" autocomplete="new-password">
+                        <button type="button" class="toggle-pass" onclick="togglePassword('signupPassword', this)">👁️</button>
+                    </div>
+                    <span class="error-msg">Neno la siri liwe herufi 6 au zaidi</span>
+                </div>
+
+                <div class="form-group" id="signupConfirmGroup">
+                    <label>Rudia Neno la Siri <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="signupConfirm" placeholder="••••••••" autocomplete="new-password">
+                        <button type="button" class="toggle-pass" onclick="togglePassword('signupConfirm', this)">👁️</button>
+                    </div>
+                    <span class="error-msg">Maneno ya siri hayafanani</span>
+                </div>
+
+                <button class="auth-submit" id="signupBtn" onclick="handleSignup()">
+                    ✍️ Unda Akaunti
+                </button>
+
+                <div class="auth-divider">au</div>
+
+                <button class="google-btn" id="googleSignupBtn" onclick="handleGoogleLogin()">
+                    <span class="g-icon">G</span>
+                    Jisajili na Google
+                </button>
+
+                <div class="auth-switch">
+                    Una akaunti tayari?
+                    <a onclick="switchTab('login')">Ingia hapa</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</main>
+
+<!-- ================== FIREBASE AUTH LOGIC ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        GoogleAuthProvider,
+        signInWithPopup,
+        updateProfile,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    // ===== SHOW ALERT =====
+    window.showAlert = function (msg, type = 'error') {
+        const el = document.getElementById('authAlert');
+        el.textContent = msg;
+        el.className = 'auth-alert show ' + type;
+        clearTimeout(window._alertTimer);
+        window._alertTimer = setTimeout(() => {
+            el.className = 'auth-alert ' + type;
+        }, 5000);
+    };
+
+    function hideAlert() {
+        const el = document.getElementById('authAlert');
+        el.className = 'auth-alert';
+    }
+
+    // ===== SWITCH TAB =====
+    window.switchTab = function (tab) {
+        hideAlert();
+        const isLogin = tab === 'login';
+        document.getElementById('tabLogin').classList.toggle('active', isLogin);
+        document.getElementById('tabSignup').classList.toggle('active', !isLogin);
+        document.getElementById('formLogin').classList.toggle('active', isLogin);
+        document.getElementById('formSignup').classList.toggle('active', !isLogin);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // ===== TOGGLE PASSWORD =====
+    window.togglePassword = function (id, btn) {
+        const inp = document.getElementById(id);
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            inp.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
+
+    // ===== CLEAR ERROR =====
+    function clearError(groupId) {
+        const g = document.getElementById(groupId);
+        if (g) g.classList.remove('error');
+    }
+
+    function setError(groupId) {
+        const g = document.getElementById(groupId);
+        if (g) g.classList.add('error');
+    }
+
+    // Attach input clear handlers
+    ['loginEmail', 'loginPassword', 'signupName', 'signupEmail',
+     'signupPhone', 'signupPassword', 'signupConfirm'].forEach(id => {
+        const inp = document.getElementById(id);
+        if (inp) {
+            inp.addEventListener('input', () => {
+                const g = inp.closest('.form-group');
+                if (g) g.classList.remove('error');
+                hideAlert();
+            });
+        }
+    });
+
+    // ===== EMAIL REGEX =====
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // ===== HANDLE SIGNUP =====
+    window.handleSignup = async function () {
+        hideAlert();
+
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const pass = document.getElementById('signupPassword').value;
+        const confirm = document.getElementById('signupConfirm').value;
+
+        let valid = true;
+
+        if (!name) { setError('signupNameGroup'); valid = false; }
+        if (!email || !EMAIL_RE.test(email)) { setError('signupEmailGroup'); valid = false; }
+        if (phone && !/^[0-9+\s-]{9,15}$/.test(phone)) { setError('signupPhoneGroup'); valid = false; }
+        if (!pass || pass.length < 6) { setError('signupPassGroup'); valid = false; }
+        if (pass !== confirm) { setError('signupConfirmGroup'); valid = false; }
+
+        if (!valid) {
+            showAlert('⚠️ Tafadhali rekebisha makosa kwenye fomu', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('signupBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Inasajili...';
+
+        try {
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            await updateProfile(cred.user, { displayName: name });
+
+            // Save user info to Firestore
+            await setDoc(doc(db, 'users', cred.user.uid), {
+                uid: cred.user.uid,
+                name: name,
+                email: email,
+                phone: phone || '',
+                role: 'customer',
+                createdAt: serverTimestamp()
+            });
+
+            showAlert('✅ Akaunti yako imefunguliwa kikamilifu! Tunakupeleka...', 'success');
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1200);
+
+        } catch (err) {
+            console.error('Signup error:', err);
+            let msg = 'Imeshindikana kusajili. Jaribu tena.';
+            if (err.code === 'auth/email-already-in-use') msg = 'Barua pepe hii tayari inatumika. Jaribu kuingia.';
+            else if (err.code === 'auth/weak-password') msg = 'Neno la siri ni dhaifu sana. Tumia herufi 6+.';
+            else if (err.code === 'auth/invalid-email') msg = 'Barua pepe si sahihi.';
+            showAlert('❌ ' + msg, 'error');
+            btn.disabled = false;
+            btn.textContent = '✍️ Unda Akaunti';
+        }
+    };
+
+    // ===== HANDLE LOGIN =====
+    window.handleLogin = async function () {
+        hideAlert();
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value;
+
+        let valid = true;
+        if (!email || !EMAIL_RE.test(email)) { setError('loginEmailGroup'); valid = false; }
+        if (!pass) { setError('loginPassGroup'); valid = false; }
+
+        if (!valid) {
+            showAlert('⚠️ Tafadhali jaza barua pepe na neno la siri', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Inaingia...';
+
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+
+            showAlert('✅ Umeingia kikamilifu! Tunakupeleka...', 'success');
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+
+        } catch (err) {
+            console.error('Login error:', err);
+            let msg = 'Imeshindikana kuingia. Jaribu tena.';
+            if (err.code === 'auth/user-not-found') msg = 'Hakuna akaunti na barua pepe hii. Jisajili kwanza.';
+            else if (err.code === 'auth/wrong-password') msg = 'Neno la siri si sahihi.';
+            else if (err.code === 'auth/invalid-credential') msg = 'Barua pepe au neno la siri si sahihi.';
+            else if (err.code === 'auth/too-many-requests') msg = 'Majaribio mengi. Subiri kidogo.';
+            showAlert('❌ ' + msg, 'error');
+            btn.disabled = false;
+            btn.textContent = '🔑 Ingia';
+        }
+    };
+
+    // ===== HANDLE GOOGLE LOGIN/SIGNUP =====
+    window.handleGoogleLogin = async function () {
+        hideAlert();
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            // Save user info if new
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    name: user.displayName || 'Mtumiaji',
+                    email: user.email || '',
+                    phone: user.phoneNumber || '',
+                    role: 'customer',
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            showAlert('✅ Umeingia na Google kikamilifu!', 'success');
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+
+        } catch (err) {
+            console.error('Google auth error:', err);
+            if (err.code === 'auth/popup-closed-by-user') {
+                showAlert('Umeghairi kuingia na Google.', 'error');
+            } else {
+                showAlert('❌ Imeshindikana kuingia na Google. Jaribu tena.', 'error');
+            }
+        }
+    };
+
+    // ===== CHECK IF ALREADY LOGGED IN =====
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // Mtumiaji ameingia tayari — mpeleke nyumbani
+            window.location.href = '/';
+        }
+    });
+</script>
+
+<%- include('../partials/footer') %>
