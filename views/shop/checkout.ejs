@@ -1,0 +1,1047 @@
+<%- include('../partials/header', { title: 'Kuweka Oda' }) %>
+<%- include('../partials/navbar', { currentPage: 'checkout' }) %>
+
+<main>
+
+<!-- ================== CHECKOUT STYLES ================== -->
+<style>
+    /* ===== PAGE HEADER ===== */
+    .checkout-header {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        padding: 40px 16px;
+        text-align: center;
+    }
+
+    .checkout-header h1 {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+    }
+
+    .checkout-header h1 span { color: var(--accent); }
+
+    .checkout-header p {
+        font-size: 14px;
+        color: #d1d5db;
+    }
+
+    /* ===== STEPS ===== */
+    .steps {
+        max-width: 800px;
+        margin: 30px auto 0;
+        padding: 0 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray);
+    }
+
+    .step .num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--border);
+        color: var(--gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .step.active .num {
+        background: var(--accent);
+        color: var(--white);
+    }
+
+    .step.active { color: var(--primary); }
+
+    .step-line {
+        width: 50px;
+        height: 2px;
+        background: var(--border);
+        margin: 0 12px;
+    }
+
+    /* ===== WRAPPER ===== */
+    .checkout-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 16px;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 26px;
+        margin-bottom: 20px;
+    }
+
+    .form-card h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-card .sub {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+
+    /* ===== FORM GRID ===== */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 7px;
+    }
+
+    .form-group label .req { color: var(--danger); }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--primary);
+        background: var(--white);
+        transition: border-color 0.2s ease;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: var(--accent);
+        outline: none;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .form-group .error-msg {
+        font-size: 12px;
+        color: var(--danger);
+        margin-top: 4px;
+        display: none;
+    }
+
+    .form-group.error input,
+    .form-group.error textarea,
+    .form-group.error select {
+        border-color: var(--danger);
+    }
+
+    .form-group.error .error-msg {
+        display: block;
+    }
+
+    /* ===== PAYMENT METHOD ===== */
+    .payment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .payment-option {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .payment-option:hover {
+        border-color: var(--primary);
+    }
+
+    .payment-option.active {
+        border-color: var(--accent);
+        background: rgba(255, 107, 0, 0.04);
+    }
+
+    .payment-option input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+        cursor: pointer;
+    }
+
+    .payment-info {
+        flex: 1;
+    }
+
+    .payment-info h4 {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 2px;
+    }
+
+    .payment-info p {
+        font-size: 12.5px;
+        color: var(--gray);
+    }
+
+    .payment-icon {
+        font-size: 26px;
+    }
+
+    /* ===== SUMMARY ===== */
+    .checkout-summary {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        position: sticky;
+        top: 90px;
+    }
+
+    .checkout-summary h3 {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    /* ===== ORDER ITEMS ===== */
+    .order-items {
+        max-height: 340px;
+        overflow-y: auto;
+        margin-bottom: 16px;
+        padding-right: 4px;
+    }
+
+    .order-items::-webkit-scrollbar { width: 5px; }
+    .order-items::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+    }
+
+    .order-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .order-item:last-child { border-bottom: none; }
+
+    .order-item-image {
+        width: 60px;
+        height: 60px;
+        background: var(--light);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .order-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .order-item-image .placeholder {
+        font-size: 26px;
+        color: #9ca3af;
+    }
+
+    .order-item-qty {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: var(--primary);
+        color: var(--white);
+        font-size: 10.5px;
+        font-weight: 700;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--white);
+    }
+
+    .order-item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .order-item-info h4 {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .order-item-info p {
+        font-size: 11.5px;
+        color: var(--gray);
+    }
+
+    .order-item-price {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    /* ===== TOTALS ===== */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: var(--gray);
+    }
+
+    .summary-row strong {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .summary-row.free strong {
+        color: var(--success);
+    }
+
+    .summary-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 14px 0;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .summary-total span:first-child {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .summary-total span:last-child {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--accent);
+    }
+
+    .place-order-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--accent);
+        color: var(--white);
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        transition: background 0.2s ease;
+        margin-bottom: 10px;
+    }
+
+    .place-order-btn:hover:not(:disabled) {
+        background: var(--accent-hover);
+    }
+
+    .place-order-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        font-size: 13px;
+        color: var(--gray);
+        font-weight: 600;
+        padding: 8px;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .summary-note {
+        font-size: 12px;
+        color: var(--gray);
+        text-align: center;
+        margin-top: 14px;
+        line-height: 1.6;
+    }
+
+    /* ===== SUCCESS ===== */
+    .success-box {
+        max-width: 620px;
+        margin: 60px auto;
+        padding: 50px 30px;
+        text-align: center;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+    }
+
+    .success-box .icon {
+        width: 90px;
+        height: 90px;
+        background: #d1fae5;
+        color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        margin: 0 auto 18px;
+    }
+
+    .success-box h1 {
+        font-size: 26px;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .success-box p {
+        color: var(--gray);
+        font-size: 14.5px;
+        margin-bottom: 8px;
+    }
+
+    .success-box .order-id {
+        display: inline-block;
+        background: var(--light);
+        color: var(--primary);
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 15px;
+        margin: 16px 0 22px;
+        letter-spacing: 0.5px;
+    }
+
+    .success-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* ===== EMPTY / LOADING ===== */
+    .checkout-loading,
+    .checkout-empty {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--gray);
+    }
+
+    .checkout-loading .spinner {
+        margin: 0 auto 16px;
+    }
+
+    .checkout-empty .icon {
+        font-size: 70px;
+        display: block;
+        margin-bottom: 14px;
+    }
+
+    .checkout-empty h2 {
+        font-size: 22px;
+        color: var(--primary);
+        margin-bottom: 8px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--primary);
+        color: var(--white);
+        padding: 14px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.35s ease;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr;
+            padding: 24px 16px;
+        }
+        .checkout-summary { position: static; }
+    }
+
+    @media (max-width: 600px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .steps { flex-wrap: wrap; gap: 8px; }
+        .step-line { width: 24px; margin: 0 6px; }
+        .checkout-header h1 { font-size: 24px; }
+    }
+</style>
+
+<!-- ================== PAGE HEADER ================== -->
+<section class="checkout-header">
+    <h1>💳 Kuweka <span>Oda</span></h1>
+    <p>Kamilisha taarifa zako ili kuagiza bidhaa zako</p>
+</section>
+
+<!-- ================== STEPS ================== -->
+<div class="steps">
+    <div class="step active">
+        <div class="num">1</div>
+        <span>Kikapu</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step active">
+        <div class="num">2</div>
+        <span>Taarifa</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+        <div class="num">3</div>
+        <span>Kamilisha</span>
+    </div>
+</div>
+
+<!-- ================== CHECKOUT CONTAINER ================== -->
+<div id="checkoutContainer">
+    <div class="checkout-loading">
+        <div class="spinner"></div>
+        <p>Inapakia...</p>
+    </div>
+</div>
+
+</main>
+
+<!-- ================== TOAST ================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ================== FIRESTORE: CHECKOUT LOGIC ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        addDoc,
+        collection,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== STATE =====
+    let cartItems = [];
+    let guestId = null;
+    let paymentMethod = 'cod'; // cash on delivery
+
+    // ===== GET GUEST ID =====
+    function getGuestId() {
+        let gid = localStorage.getItem('guestId');
+        if (!gid) {
+            gid = 'guest_' + Math.random().toString(36).substring(2, 12) + Date.now();
+            localStorage.setItem('guestId', gid);
+        }
+        return gid;
+    }
+
+    // ===== FORMAT PRICE =====
+    function formatPrice(value) {
+        const num = Number(value) || 0;
+        return 'TZS ' + num.toLocaleString('en-US');
+    }
+
+    // ===== SHOW TOAST =====
+    function showToast(msg, type = 'success') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + type;
+        setTimeout(() => {
+            t.className = 'toast ' + type;
+        }, 3000);
+    }
+
+    // ===== CALCULATE TOTALS =====
+    function calcTotals() {
+        const subtotal = cartItems.reduce((sum, i) => {
+            return sum + (Number(i.price) || 0) * (Number(i.quantity) || 0);
+        }, 0);
+        const shippingFee = subtotal >= 100000 || subtotal === 0 ? 0 : 5000;
+        const total = subtotal + shippingFee;
+        const totalQty = cartItems.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0);
+        return { subtotal, shippingFee, total, totalQty };
+    }
+
+    // ===== GENERATE ORDER ID =====
+    function generateOrderId() {
+        const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+        return 'ORD-' + Date.now().toString().slice(-6) + '-' + rand;
+    }
+
+    // ===== RENDER EMPTY =====
+    function renderEmpty() {
+        document.getElementById('checkoutContainer').innerHTML = `
+            <div class="checkout-empty">
+                <span class="icon">🛒</span>
+                <h2>Kikapu chako ni kitupu</h2>
+                <p style="margin-bottom:20px;">Hakuna bidhaa za kuagiza. Anza kununua kwanza.</p>
+                <a href="/shop" class="btn btn-primary">🛍️ Nenda Dukani</a>
+            </div>
+        `;
+    }
+
+    // ===== RENDER SUCCESS =====
+    function renderSuccess(orderId, orderData) {
+        document.getElementById('checkoutContainer').innerHTML = `
+            <div class="success-box">
+                <div class="icon">✓</div>
+                <h1>Oda Yako Imepokelewa!</h1>
+                <p>Asante kwa kununua nasi, <strong>${orderData.customerName}</strong>.</p>
+                <p>Tutawasiliana nawe kwa <strong>${orderData.customerPhone}</strong> kuthibitisha oda yako.</p>
+                <div class="order-id">${orderId}</div>
+                <div class="success-actions">
+                    <a href="/shop" class="btn btn-primary">🛍️ Endelea Kununua</a>
+                    <a href="/" class="btn btn-outline">🏠 Rudi Nyumbani</a>
+                </div>
+                <p class="summary-note" style="margin-top:22px;">
+                    💵 Malipo: <strong>Cash on Delivery</strong><br>
+                    📞 Utapigiwa simu hivi karibuni kwa maelezo zaidi.
+                </p>
+            </div>
+        `;
+    }
+
+    // ===== RENDER CHECKOUT FORM =====
+    function renderCheckout() {
+        if (cartItems.length === 0) {
+            renderEmpty();
+            return;
+        }
+
+        const { subtotal, shippingFee, total, totalQty } = calcTotals();
+
+        let itemsHtml = '';
+        cartItems.forEach(item => {
+            const imgHtml = item.image
+                ? `<img src="${item.image}" alt="${item.name}">`
+                : `<div class="placeholder">👕</div>`;
+
+            const meta = [];
+            if (item.size) meta.push(`Ukubwa: ${item.size}`);
+            if (item.color) meta.push(`Rangi: ${item.color}`);
+
+            const itemSubtotal = (Number(item.price) || 0) * (Number(item.quantity) || 0);
+
+            itemsHtml += `
+                <div class="order-item">
+                    <div class="order-item-image">
+                        ${imgHtml}
+                        <div class="order-item-qty">${item.quantity}</div>
+                    </div>
+                    <div class="order-item-info">
+                        <h4>${item.name || 'Bidhaa'}</h4>
+                        <p>${meta.join(' • ') || 'Bidhaa'}</p>
+                    </div>
+                    <div class="order-item-price">${formatPrice(itemSubtotal)}</div>
+                </div>
+            `;
+        });
+
+        const shippingText = shippingFee === 0
+            ? `<span style="color:var(--success);font-weight:700;">BURE</span>`
+            : `<strong>${formatPrice(shippingFee)}</strong>`;
+
+        document.getElementById('checkoutContainer').innerHTML = `
+            <div class="checkout-wrapper">
+
+                <!-- FORM -->
+                <div>
+                    <form id="checkoutForm" novalidate>
+
+                        <!-- CUSTOMER INFO -->
+                        <div class="form-card">
+                            <h2>👤 Taarifa Zako</h2>
+                            <p class="sub">Tafadhali jaza taarifa zako kwa usahihi</p>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Jina Kamili <span class="req">*</span></label>
+                                    <input type="text" name="customerName" placeholder="Mf. Juma Hamisi" required>
+                                    <span class="error-msg">Jina linahitajika</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Namba ya Simu <span class="req">*</span></label>
+                                    <input type="tel" name="customerPhone" placeholder="Mf. 0712 345 678" required>
+                                    <span class="error-msg">Namba sahihi inahitajika</span>
+                                </div>
+
+                                <div class="form-group full">
+                                    <label>Barua Pepe (si lazima)</label>
+                                    <input type="email" name="customerEmail" placeholder="Mf. juma@email.com">
+                                    <span class="error-msg">Barua pepe si sahihi</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SHIPPING -->
+                        <div class="form-card">
+                            <h2>🚚 Anwani ya Usafirishaji</h2>
+                            <p class="sub">Tutawasilisha bidhaa zako mahali hapa</p>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Mkoa <span class="req">*</span></label>
+                                    <select name="region" required>
+                                        <option value="">-- Chagua Mkoa --</option>
+                                        <option>Dar es Salaam</option>
+                                        <option>Arusha</option>
+                                        <option>Mwanza</option>
+                                        <option>Dodoma</option>
+                                        <option>Mbeya</option>
+                                        <option>Tanga</option>
+                                        <option>Morogoro</option>
+                                        <option>Zanzibar</option>
+                                        <option>Mengineyo</option>
+                                    </select>
+                                    <span class="error-msg">Chagua mkoa</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Wilaya / Manispaa <span class="req">*</span></label>
+                                    <input type="text" name="district" placeholder="Mf. Kinondoni" required>
+                                    <span class="error-msg">Wilaya inahitajika</span>
+                                </div>
+
+                                <div class="form-group full">
+                                    <label>Anwani Kamili <span class="req">*</span></label>
+                                    <textarea name="address" placeholder="Mf. Mtaa wa Kariakoo, Karibu na soko..." required></textarea>
+                                    <span class="error-msg">Anwani inahitajika</span>
+                                </div>
+
+                                <div class="form-group full">
+                                    <label>Maelezo ya Ziada (si lazima)</label>
+                                    <textarea name="notes" placeholder="Mf. Nipigie simu kabla ya kuwasilisha..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAYMENT -->
+                        <div class="form-card">
+                            <h2>💳 Njia ya Malipo</h2>
+                            <p class="sub">Chagua jinsi ungependa kulipa</p>
+
+                            <div class="payment-options">
+                                <label class="payment-option active" data-payment="cod">
+                                    <input type="radio" name="payment" value="cod" checked>
+                                    <span class="payment-icon">💵</span>
+                                    <div class="payment-info">
+                                        <h4>Cash on Delivery</h4>
+                                        <p>Lipa kwa pesa taslimu wakati wa kupokea bidhaa</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SUMMARY -->
+                <div class="checkout-summary">
+                    <h3>Muhtasari wa Oda</h3>
+
+                    <div class="order-items">
+                        ${itemsHtml}
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Jumla ndogo (${totalQty} bidhaa)</span>
+                        <strong>${formatPrice(subtotal)}</strong>
+                    </div>
+
+                    <div class="summary-row ${shippingFee === 0 ? 'free' : ''}">
+                        <span>Usafirishaji</span>
+                        ${shippingText}
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-total">
+                        <span>JUMLA KUU</span>
+                        <span>${formatPrice(total)}</span>
+                    </div>
+
+                    <button class="place-order-btn" id="placeOrderBtn">
+                        ✓ Kamilisha Oda
+                    </button>
+
+                    <a href="/cart" class="back-link">← Rudi Kikapuni</a>
+
+                    <p class="summary-note">
+                        🔒 Malipo salama — Cash on Delivery<br>
+                        📞 Utapigiwa simu kuthibitisha oda yako
+                    </p>
+                </div>
+            </div>
+        `;
+
+        attachEvents();
+    }
+
+    // ===== ATTACH EVENTS =====
+    function attachEvents() {
+        // Payment option click
+        document.querySelectorAll('.payment-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    paymentMethod = radio.value;
+                }
+            });
+        });
+
+        // Place order
+        const btn = document.getElementById('placeOrderBtn');
+        if (btn) {
+            btn.addEventListener('click', placeOrder);
+        }
+
+        // Clear error on input
+        document.querySelectorAll('#checkoutForm input, #checkoutForm select, #checkoutForm textarea').forEach(inp => {
+            inp.addEventListener('input', () => {
+                inp.closest('.form-group').classList.remove('error');
+            });
+        });
+    }
+
+    // ===== VALIDATE FORM =====
+    function validateForm() {
+        const form = document.getElementById('checkoutForm');
+        let valid = true;
+
+        // Clear all errors first
+        form.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+
+        const required = ['customerName', 'customerPhone', 'region', 'district', 'address'];
+
+        required.forEach(name => {
+            const input = form.querySelector(`[name="${name}"]`);
+            if (!input) return;
+            const value = (input.value || '').trim();
+
+            if (!value) {
+                input.closest('.form-group').classList.add('error');
+                valid = false;
+            }
+        });
+
+        // Phone validation (basic)
+        const phone = form.querySelector('[name="customerPhone"]').value.trim();
+        if (phone && !/^[0-9+\s-]{9,15}$/.test(phone)) {
+            form.querySelector('[name="customerPhone"]').closest('.form-group').classList.add('error');
+            valid = false;
+        }
+
+        // Email validation (optional but if given must be valid)
+        const email = form.querySelector('[name="customerEmail"]').value.trim();
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            form.querySelector('[name="customerEmail"]').closest('.form-group').classList.add('error');
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    // ===== PLACE ORDER =====
+    async function placeOrder() {
+        if (!validateForm()) {
+            showToast('⚠️ Tafadhali jaza taarifa zote sahihi', 'error');
+            // Scroll to first error
+            const firstErr = document.querySelector('.form-group.error');
+            if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        const btn = document.getElementById('placeOrderBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Inatuma oda...';
+
+        const form = document.getElementById('checkoutForm');
+        const formData = new FormData(form);
+
+        const { subtotal, shippingFee, total, totalQty } = calcTotals();
+
+        // Build order object
+        const orderData = {
+            orderId: generateOrderId(),
+            customerName: formData.get('customerName').trim(),
+            customerPhone: formData.get('customerPhone').trim(),
+            customerEmail: (formData.get('customerEmail') || '').trim(),
+            region: formData.get('region'),
+            district: formData.get('district').trim(),
+            address: formData.get('address').trim(),
+            notes: (formData.get('notes') || '').trim(),
+            paymentMethod: paymentMethod,
+            items: cartItems.map(i => ({
+                productId: i.productId,
+                name: i.name,
+                price: Number(i.price) || 0,
+                quantity: Number(i.quantity) || 0,
+                size: i.size || null,
+                color: i.color || null,
+                image: i.image || ''
+            })),
+            subtotal,
+            shippingFee,
+            total,
+            totalQty,
+            status: 'pending', // pending | confirmed | shipped | delivered | cancelled
+            guestId: guestId,
+            createdAt: serverTimestamp()
+        };
+
+        try {
+            // Save to Firestore collection "orders"
+            const docRef = await addDoc(collection(db, 'orders'), orderData);
+
+            // Clear cart from Firestore
+            await setDoc(doc(db, 'carts', guestId), {
+                items: [],
+                guestId,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            // Update navbar badge
+            const badges = document.querySelectorAll('.icon-badge');
+            badges.forEach(b => b.textContent = '0');
+
+            // Show success
+            renderSuccess(orderData.orderId, orderData);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (err) {
+            console.error('Kosa la kutuma oda:', err);
+            showToast('❌ Imeshindikana kutuma oda. Jaribu tena.', 'error');
+            btn.disabled = false;
+            btn.textContent = '✓ Kamilisha Oda';
+        }
+    }
+
+    // ===== LOAD CART =====
+    async function loadCart() {
+        guestId = getGuestId();
+
+        try {
+            const cartRef = doc(db, 'carts', guestId);
+            const snap = await getDoc(cartRef);
+
+            if (snap.exists()) {
+                cartItems = snap.data().items || [];
+            } else {
+                cartItems = [];
+            }
+
+            renderCheckout();
+
+        } catch (err) {
+            console.error('Kosa la kupakia kikapu:', err);
+            document.getElementById('checkoutContainer').innerHTML = `
+                <div class="checkout-empty">
+                    <span class="icon">⚠️</span>
+                    <h2>Imeshindikana kupakia taarifa</h2>
+                    <p>${err.message}</p>
+                    <a href="/cart" class="btn btn-primary">Rudi Kikapuni</a>
+                </div>
+            `;
+        }
+    }
+
+    loadCart();
+</script>
+
+<%- include('../partials/footer') %>
