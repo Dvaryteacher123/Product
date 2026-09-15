@@ -1,0 +1,662 @@
+<%- include('../partials/header', { title: 'Nyumbani' }) %>
+<%- include('../partials/navbar', { currentPage: 'home' }) %>
+
+<main>
+
+<!-- ================== HOME STYLES ================== -->
+<style>
+    /* ===== HERO ===== */
+    .hero {
+        background: linear-gradient(135deg, #111827 0%, #374151 100%);
+        color: var(--white);
+        padding: 80px 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::after {
+        content: "";
+        position: absolute;
+        right: -100px;
+        top: -100px;
+        width: 400px;
+        height: 400px;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.15;
+    }
+
+    .hero-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-text .tag {
+        display: inline-block;
+        background: rgba(255, 107, 0, 0.15);
+        color: var(--accent);
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+
+    .hero-text h1 {
+        font-size: 46px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
+    }
+
+    .hero-text h1 span { color: var(--accent); }
+
+    .hero-text p {
+        font-size: 16px;
+        color: #d1d5db;
+        margin-bottom: 28px;
+        max-width: 520px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .hero-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 220px;
+        line-height: 1;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+        max-width: 1200px;
+        margin: -40px auto 0;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .feature-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        transition: transform 0.25s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .feature-icon {
+        width: 46px;
+        height: 46px;
+        background: var(--light);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .feature-info h4 {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .feature-info p {
+        font-size: 12.5px;
+        color: var(--gray);
+    }
+
+    /* ===== SECTION ===== */
+    .section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 16px;
+    }
+
+    .section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .section-head h2 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .section-head h2 span { color: var(--accent); }
+
+    .section-head p {
+        font-size: 14px;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    .section-head a {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent);
+    }
+
+    .section-head a:hover { text-decoration: underline; }
+
+    /* ===== CATEGORIES ===== */
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .category-card {
+        background: var(--light);
+        border-radius: 14px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: all 0.25s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .category-card:hover {
+        background: var(--white);
+        border-color: var(--accent);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .category-card .emoji {
+        font-size: 46px;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .category-card h4 {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 4px;
+    }
+
+    .category-card p {
+        font-size: 12.5px;
+        color: var(--gray);
+    }
+
+    /* ===== PRODUCTS ===== */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+    }
+
+    .product-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+
+    .product-image {
+        height: 230px;
+        background: var(--light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.06);
+    }
+
+    .product-image .placeholder {
+        font-size: 72px;
+        color: #9ca3af;
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--accent);
+        color: var(--white);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    .product-badge.sale { background: var(--danger); }
+    .product-badge.new { background: var(--success); }
+
+    .product-info {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-category {
+        font-size: 11.5px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 8px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-rating {
+        font-size: 12.5px;
+        color: #f59e0b;
+        margin-bottom: 10px;
+    }
+
+    .product-rating span { color: var(--gray); margin-left: 4px; }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: auto;
+        margin-bottom: 12px;
+    }
+
+    .price-now {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .price-old {
+        font-size: 13px;
+        color: var(--gray);
+        text-decoration: line-through;
+    }
+
+    .product-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        text-align: center;
+        transition: background 0.2s ease;
+    }
+
+    .product-btn:hover {
+        background: var(--accent);
+    }
+
+    /* ===== LOADING / EMPTY ===== */
+    .loading-state,
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray);
+    }
+
+    .loading-state .spinner {
+        margin: 0 auto 16px;
+    }
+
+    .empty-state .icon {
+        font-size: 60px;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    /* ===== CTA BANNER ===== */
+    .cta-banner {
+        max-width: 1200px;
+        margin: 40px auto 0;
+        padding: 0 16px;
+    }
+
+    .cta-inner {
+        background: linear-gradient(135deg, var(--accent) 0%, #ff8c33 100%);
+        color: var(--white);
+        border-radius: 16px;
+        padding: 45px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .cta-inner h2 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .cta-inner p {
+        font-size: 15px;
+        opacity: 0.95;
+    }
+
+    .cta-inner .btn {
+        background: var(--white);
+        color: var(--accent);
+        padding: 13px 30px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .cta-inner .btn:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+        .products-grid,
+        .categories-grid { grid-template-columns: repeat(3, 1fr); }
+        .features { grid-template-columns: repeat(2, 1fr); }
+        .hero-inner { grid-template-columns: 1fr; text-align: center; }
+        .hero-text p { margin-left: auto; margin-right: auto; }
+        .hero-actions { justify-content: center; }
+        .hero-image { font-size: 160px; }
+        .hero-text h1 { font-size: 36px; }
+    }
+
+    @media (max-width: 700px) {
+        .products-grid,
+        .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .hero { padding: 50px 16px; }
+        .hero-text h1 { font-size: 28px; }
+        .hero-image { font-size: 120px; }
+        .section { padding: 40px 16px; }
+        .cta-inner { padding: 30px 22px; text-align: center; justify-content: center; }
+        .cta-inner h2 { font-size: 22px; }
+        .features { margin-top: 20px; }
+    }
+
+    @media (max-width: 420px) {
+        .products-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<!-- ================== HERO ================== -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <span class="tag">🔥 Ofa Maalum ya Mwezi</span>
+            <h1>Nguo Bora kwa <span>Bei Nafuu</span> Tanzania</h1>
+            <p>
+                Karibu ClothingStore — tunatoa nguo za kisasa, viatu, na vifaa vya mitindo
+                mipya kwa wanaume, wanawake, na watoto. Nunua leo kwa usafirishaji wa haraka.
+            </p>
+            <div class="hero-actions">
+                <a href="/shop" class="btn btn-primary">🛍️ Nunua Sasa</a>
+                <a href="/about" class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: white;">Jifunze Zaidi</a>
+            </div>
+        </div>
+        <div class="hero-image">👕</div>
+    </div>
+</section>
+
+<!-- ================== FEATURES ================== -->
+<div class="features">
+    <div class="feature-card">
+        <div class="feature-icon">🚚</div>
+        <div class="feature-info">
+            <h4>Usafirishaji Bure</h4>
+            <p>Oda zaidi ya TZS 100,000</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <div class="feature-info">
+            <h4>Malipo Rahisi</h4>
+            <p>Cash on Delivery</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <div class="feature-info">
+            <h4>Kubadilisha</h4>
+            <p>Siku 7 baada ya kupokea</p>
+        </div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📞</div>
+        <div class="feature-info">
+            <h4>Msaada 24/7</h4>
+            <p>Tupo kukusaidia kila wakati</p>
+        </div>
+    </div>
+</div>
+
+<!-- ================== CATEGORIES ================== -->
+<section class="section">
+    <div class="section-head">
+        <div>
+            <h2>Aina za <span>Nguo</span></h2>
+            <p>Chagua aina unayopenda</p>
+        </div>
+    </div>
+
+    <div class="categories-grid" id="categoriesGrid">
+        <a href="/shop?category=men" class="category-card">
+            <span class="emoji">👔</span>
+            <h4>Wanaume</h4>
+            <p>Nguo za kiume</p>
+        </a>
+        <a href="/shop?category=women" class="category-card">
+            <span class="emoji">👗</span>
+            <h4>Wanawake</h4>
+            <p>Nguo za kike</p>
+        </a>
+        <a href="/shop?category=kids" class="category-card">
+            <span class="emoji">🧒</span>
+            <h4>Watoto</h4>
+            <p>Nguo za watoto</p>
+        </a>
+        <a href="/shop?category=shoes" class="category-card">
+            <span class="emoji">👟</span>
+            <h4>Viatu</h4>
+            <p>Viatu vya kisasa</p>
+        </a>
+    </div>
+</section>
+
+<!-- ================== FEATURED PRODUCTS ================== -->
+<section class="section" style="padding-top: 0;">
+    <div class="section-head">
+        <div>
+            <h2>Bidhaa <span>Mpya</span></h2>
+            <p>Zilizoongezwa hivi karibuni dukani</p>
+        </div>
+        <a href="/shop">Ona Zote →</a>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Inapakia bidhaa...</p>
+        </div>
+    </div>
+</section>
+
+<!-- ================== CTA BANNER ================== -->
+<div class="cta-banner">
+    <div class="cta-inner">
+        <div>
+            <h2>Pata Ofa Maalum Leo!</h2>
+            <p>Jiunge nasi na upate punguzo la 10% kwenye oda yako ya kwanza.</p>
+        </div>
+        <a href="/shop" class="btn">Anza Kununua →</a>
+    </div>
+</div>
+
+</main>
+
+<!-- ================== FIRESTORE: LOAD PRODUCTS ================== -->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs }
+        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== FORMAT PRICE =====
+    function formatPrice(value) {
+        const num = Number(value) || 0;
+        return 'TZS ' + num.toLocaleString('en-US');
+    }
+
+    // ===== LOAD PRODUCTS FROM FIRESTORE =====
+    async function loadProducts() {
+        const grid = document.getElementById('productsGrid');
+
+        try {
+            const productsRef = collection(db, 'products');
+            const q = query(productsRef, orderBy('createdAt', 'desc'), limit(8));
+            const snapshot = await getDocs(q);
+
+            if (snapshot.empty) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="icon">📦</span>
+                        <h3>Hakuna bidhaa bado</h3>
+                        <p>Bidhaa zitaonekana hapa mara admin atakapoongeza.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach((doc) => {
+                const p = doc.data();
+                const id = doc.id;
+
+                const imageHtml = p.image
+                    ? `<img src="${p.image}" alt="${p.name || 'Bidhaa'}" loading="lazy">`
+                    : `<div class="placeholder">👕</div>`;
+
+                let badgeHtml = '';
+                if (p.badge === 'sale') badgeHtml = `<span class="product-badge sale">Punguzo</span>`;
+                else if (p.badge === 'new') badgeHtml = `<span class="product-badge new">Mpya</span>`;
+                else if (p.isNew) badgeHtml = `<span class="product-badge new">Mpya</span>`;
+
+                const oldPriceHtml = (p.oldPrice && Number(p.oldPrice) > 0)
+                    ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>`
+                    : '';
+
+                const rating = Number(p.rating) || 0;
+                const reviews = Number(p.reviews) || 0;
+
+                html += `
+                    <div class="product-card">
+                        <a href="/product/${id}" class="product-image">
+                            ${imageHtml}
+                            ${badgeHtml}
+                        </a>
+                        <div class="product-info">
+                            <div class="product-category">${p.category || 'Nguo'}</div>
+                            <a href="/product/${id}" class="product-name">${p.name || 'Bidhaa'}</a>
+                            <div class="product-rating">
+                                ${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}
+                                <span>(${reviews})</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="price-now">${formatPrice(p.price)}</span>
+                                ${oldPriceHtml}
+                            </div>
+                            <a href="/product/${id}" class="product-btn">Ona Bidhaa</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+        } catch (err) {
+            console.error('Kosa la kupakia bidhaa:', err);
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <span class="icon">⚠️</span>
+                    <h3>Imeshindikana kupakia bidhaa</h3>
+                    <p>${err.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    loadProducts();
+</script>
+
+<%- include('../partials/footer') %>
