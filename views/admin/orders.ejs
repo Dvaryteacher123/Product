@@ -1,0 +1,1149 @@
+<%- include('../partials/header', { title: 'Oda - Admin' }) %>
+<%- include('../partials/admin-sidebar', { adminPage: 'orders' }) %>
+
+<!-- ================== ORDERS STYLES ================== -->
+<style>
+    /* ===== TOP BAR ===== */
+    .page-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        position: relative;
+        min-width: 240px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 10px 14px 10px 38px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        background: var(--white);
+    }
+
+    .search-box input:focus { border-color: var(--accent); }
+
+    .search-box .icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: var(--gray);
+    }
+
+    /* ===== MINI STATS ===== */
+    .mini-stats {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .mini-stat {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+        text-align: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .mini-stat:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+    }
+
+    .mini-stat.active {
+        border-color: var(--accent);
+        background: rgba(255, 107, 0, 0.03);
+    }
+
+    .mini-stat .num {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+        margin-bottom: 2px;
+    }
+
+    .mini-stat .lbl {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .mini-stat.pending .num { color: #d97706; }
+    .mini-stat.confirmed .num { color: #2563eb; }
+    .mini-stat.shipped .num { color: #4338ca; }
+    .mini-stat.delivered .num { color: #059669; }
+    .mini-stat.cancelled .num { color: #dc2626; }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+    }
+
+    .filter-chip {
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        background: var(--light);
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        font-family: inherit;
+    }
+
+    .filter-chip:hover { color: var(--primary); border-color: var(--border); }
+
+    .filter-chip.active {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    /* ===== TABLE ===== */
+    .orders-panel {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+    }
+
+    .orders-table th {
+        text-align: left;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 16px;
+        background: var(--light);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .orders-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+    }
+
+    .orders-table tr:last-child td { border-bottom: none; }
+    .orders-table tr:hover td { background: #fafafa; }
+
+    .order-id {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 12.5px;
+        letter-spacing: 0.3px;
+    }
+
+    .order-date {
+        font-size: 11.5px;
+        color: var(--gray);
+        margin-top: 3px;
+    }
+
+    .customer-cell strong {
+        display: block;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 13.5px;
+        margin-bottom: 2px;
+    }
+
+    .customer-cell span {
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .order-total {
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 14px;
+    }
+
+    .order-items-count {
+        font-size: 12.5px;
+        color: var(--gray);
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-badge {
+        display: inline-block;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 4px 11px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-confirmed { background: #dbeafe; color: #1e40af; }
+    .status-shipped { background: #e0e7ff; color: #4338ca; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+    /* ===== ROW ACTIONS ===== */
+    .row-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .row-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        background: var(--light);
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .row-btn:hover {
+        border-color: var(--border);
+        background: var(--white);
+    }
+
+    .row-btn.view:hover { background: #dbeafe; }
+
+    /* ===== LOADING / EMPTY ===== */
+    .table-empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray);
+    }
+
+    .table-empty .icon {
+        font-size: 60px;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .table-empty h3 {
+        font-size: 17px;
+        color: var(--primary);
+        margin-bottom: 6px;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 1500;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 30px 16px;
+        overflow-y: auto;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+        background: var(--white);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 720px;
+        overflow: hidden;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+        animation: modalIn 0.25s ease;
+        margin-top: 20px;
+    }
+
+    @keyframes modalIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-head {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .modal-head h2 {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.3px;
+    }
+
+    .modal-head .order-id-label {
+        font-size: 12px;
+        color: var(--gray);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .modal-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: var(--light);
+        font-size: 18px;
+        color: var(--gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--danger);
+        color: var(--white);
+    }
+
+    .modal-body {
+        padding: 24px;
+        max-height: 68vh;
+        overflow-y: auto;
+    }
+
+    .modal-body::-webkit-scrollbar { width: 6px; }
+    .modal-body::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+    }
+
+    /* ===== DETAIL SECTIONS ===== */
+    .detail-section {
+        margin-bottom: 22px;
+    }
+
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-section h3 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .detail-item {
+        font-size: 13.5px;
+    }
+
+    .detail-item label {
+        display: block;
+        font-size: 11.5px;
+        color: var(--gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 3px;
+    }
+
+    .detail-item p {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    /* ===== ITEM LIST ===== */
+    .item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .order-item-row {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        background: var(--light);
+        border-radius: 10px;
+        align-items: center;
+    }
+
+    .order-item-row .thumb {
+        width: 52px;
+        height: 52px;
+        background: var(--white);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+    }
+
+    .order-item-row .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .order-item-row .thumb .placeholder {
+        font-size: 22px;
+        color: #9ca3af;
+    }
+
+    .order-item-row .info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .order-item-row .info h4 {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .order-item-row .info p {
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .order-item-row .price-info {
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .order-item-row .price-info .qty {
+        font-size: 11.5px;
+        color: var(--gray);
+        margin-bottom: 3px;
+    }
+
+    .order-item-row .price-info .pr {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    /* ===== TOTALS ===== */
+    .totals-box {
+        background: var(--light);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-top: 12px;
+    }
+
+    .totals-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13.5px;
+        margin-bottom: 8px;
+        color: var(--gray);
+    }
+
+    .totals-row:last-child {
+        margin-bottom: 0;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+        margin-top: 10px;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .totals-row:last-child span:last-child {
+        color: var(--accent);
+        font-size: 17px;
+    }
+
+    /* ===== STATUS UPDATE ===== */
+    .status-actions {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+
+    .status-btn {
+        padding: 10px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
+    .status-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .status-btn.active {
+        border-color: transparent;
+        color: var(--white);
+    }
+
+    .status-btn.pending.active { background: #d97706; }
+    .status-btn.confirmed.active { background: #2563eb; }
+    .status-btn.shipped.active { background: #4338ca; }
+    .status-btn.delivered.active { background: #059669; }
+    .status-btn.cancelled.active { background: #dc2626; }
+
+    /* ===== MODAL FOOT ===== */
+    .modal-foot {
+        padding: 18px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        background: var(--light);
+        flex-wrap: wrap;
+    }
+
+    .modal-foot .right-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-cancel {
+        padding: 11px 20px;
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .btn-cancel:hover { border-color: var(--primary); }
+
+    .btn-danger {
+        padding: 11px 20px;
+        background: var(--white);
+        border: 1.5px solid var(--danger);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--danger);
+        transition: all 0.2s ease;
+    }
+
+    .btn-danger:hover {
+        background: var(--danger);
+        color: var(--white);
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: var(--primary);
+        color: var(--white);
+        padding: 14px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.35s ease;
+    }
+
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1000px) {
+        .mini-stats { grid-template-columns: repeat(3, 1fr); }
+        .detail-grid { grid-template-columns: 1fr; }
+        .status-actions { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+        .orders-table .hide-mobile { display: none; }
+        .mini-stats { grid-template-columns: repeat(2, 1fr); }
+        .search-box { min-width: 100%; }
+        .page-actions { width: 100%; }
+    }
+</style>
+
+<!-- ================== ADMIN HEADER ================== -->
+<div class="admin-header">
+    <div>
+        <h1>📦 Oda</h1>
+        <p>Simamia oda zote kutoka kwa wateja</p>
+    </div>
+    <div class="page-actions">
+        <div class="search-box">
+            <span class="icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Tafuta kwa jina, simu au ID...">
+        </div>
+    </div>
+</div>
+
+<!-- ================== MINI STATS ================== -->
+<div class="mini-stats" id="miniStats">
+    <div class="mini-stat" data-filter="all">
+        <div class="num" id="msAll">—</div>
+        <div class="lbl">Zote</div>
+    </div>
+    <div class="mini-stat pending" data-filter="pending">
+        <div class="num" id="msPending">—</div>
+        <div class="lbl">Zinasubiri</div>
+    </div>
+    <div class="mini-stat confirmed" data-filter="confirmed">
+        <div class="num" id="msConfirmed">—</div>
+        <div class="lbl">Zimethibitishwa</div>
+    </div>
+    <div class="mini-stat shipped" data-filter="shipped">
+        <div class="num" id="msShipped">—</div>
+        <div class="lbl">Zimesafirishwa</div>
+    </div>
+    <div class="mini-stat delivered" data-filter="delivered">
+        <div class="num" id="msDelivered">—</div>
+        <div class="lbl">Zimefikishwa</div>
+    </div>
+</div>
+
+<!-- ================== FILTER BAR ================== -->
+<div class="filter-bar" id="filterBar">
+    <button class="filter-chip active" data-filter="all">Zote</button>
+    <button class="filter-chip" data-filter="pending">Zinasubiri</button>
+    <button class="filter-chip" data-filter="confirmed">Zimethibitishwa</button>
+    <button class="filter-chip" data-filter="shipped">Zimesafirishwa</button>
+    <button class="filter-chip" data-filter="delivered">Zimefikishwa</button>
+    <button class="filter-chip" data-filter="cancelled">Zimefutwa</button>
+</div>
+
+<!-- ================== ORDERS PANEL ================== -->
+<div class="orders-panel">
+    <div id="ordersBody">
+        <div class="table-empty">
+            <div class="spinner" style="margin:0 auto 14px;"></div>
+            <p>Inapakia oda...</p>
+        </div>
+    </div>
+</div>
+
+</div><!-- /.admin-main -->
+</div><!-- /.admin-layout -->
+
+<!-- ================== ORDER DETAIL MODAL ================== -->
+<div class="modal-overlay" id="orderModal">
+    <div class="modal">
+        <div class="modal-head">
+            <div>
+                <h2>Maelezo ya Oda</h2>
+                <div class="order-id-label" id="modalOrderId">—</div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body" id="modalBody">
+            <!-- Inajazwa na JS -->
+        </div>
+
+        <div class="modal-foot">
+            <button class="btn-danger" onclick="cancelOrder()">🚫 Futa Oda</button>
+            <div class="right-actions">
+                <button class="btn-cancel" onclick="closeModal()">Funga</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== TOAST ================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ================== FIRESTORE: ORDERS LOGIC ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+        getFirestore,
+        collection,
+        getDocs,
+        doc,
+        updateDoc,
+        deleteDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-8IRm50zrlHWjG-jpfzrh0YtprC1Tsaw",
+        authDomain: "product-store-6a651.firebaseapp.com",
+        projectId: "product-store-6a651",
+        storageBucket: "product-store-6a651.firebasestorage.app",
+        messagingSenderId: "379449735108",
+        appId: "1:379449735108:web:bf0bb51d68f28273cdd691"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== STATE =====
+    let allOrders = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentOrderId = null;
+
+    // ===== HELPERS =====
+    const STATUS_SW = {
+        pending: 'Inasubiri',
+        confirmed: 'Imethibitishwa',
+        shipped: 'Imesafirishwa',
+        delivered: 'Imefikishwa',
+        cancelled: 'Imefutwa'
+    };
+
+    function formatPrice(v) {
+        return 'TZS ' + (Number(v) || 0).toLocaleString('en-US');
+    }
+
+    function formatDate(val) {
+        if (!val) return '—';
+        let seconds = 0;
+        if (typeof val === 'object' && val.seconds) seconds = val.seconds;
+        else if (val instanceof Date) seconds = val.getTime() / 1000;
+        else return '—';
+        const d = new Date(seconds * 1000);
+        return d.toLocaleDateString('sw-TZ', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function formatDateTime(val) {
+        if (!val) return '—';
+        let seconds = 0;
+        if (typeof val === 'object' && val.seconds) seconds = val.seconds;
+        else if (val instanceof Date) seconds = val.getTime() / 1000;
+        else return '—';
+        const d = new Date(seconds * 1000);
+        return d.toLocaleString('sw-TZ', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function escapeHtml(s) {
+        return String(s || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg, type = 'success') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + type;
+        setTimeout(() => { t.className = 'toast ' + type; }, 3000);
+    }
+
+    function statusBadge(status) {
+        const cls = 'status-' + (status || 'pending');
+        const label = STATUS_SW[status] || 'Inasubiri';
+        return `<span class="status-badge ${cls}">${label}</span>`;
+    }
+
+    // ===== SIDEBAR TOGGLE =====
+    window.toggleSidebar = function () {
+        document.getElementById('adminSidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    };
+
+    // ===== RENDER =====
+    function renderOrders() {
+        const body = document.getElementById('ordersBody');
+
+        let list = allOrders.filter(({ data: o }) => {
+            // Filter by status
+            if (currentFilter !== 'all') {
+                const s = o.status || 'pending';
+                if (s !== currentFilter) return false;
+            }
+            // Search
+            if (currentSearch) {
+                const q = currentSearch.toLowerCase();
+                const name = (o.customerName || '').toLowerCase();
+                const phone = (o.customerPhone || '').toLowerCase();
+                const oid = (o.orderId || '').toLowerCase();
+                if (!name.includes(q) && !phone.includes(q) && !oid.includes(q)) return false;
+            }
+            return true;
+        });
+
+        if (list.length === 0) {
+            body.innerHTML = `
+                <div class="table-empty">
+                    <span class="icon">📭</span>
+                    <h3>Hakuna oda zilizopatikana</h3>
+                    <p>${currentSearch || currentFilter !== 'all' ? 'Jaribu kubadilisha chujio au utafutaji.' : 'Oda mpya zitaonekana hapa.'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        let rows = '';
+        list.forEach(({ id, data: o }) => {
+            const itemsCount = (o.items || []).reduce((s, i) => s + (Number(i.quantity) || 0), 0);
+            rows += `
+                <tr>
+                    <td>
+                        <div class="order-id">${escapeHtml(o.orderId || id.slice(0, 8))}</div>
+                        <div class="order-date">${formatDate(o.createdAt)}</div>
+                    </td>
+                    <td>
+                        <div class="customer-cell">
+                            <strong>${escapeHtml(o.customerName || '—')}</strong>
+                            <span>${escapeHtml(o.customerPhone || '')}</span>
+                        </div>
+                    </td>
+                    <td class="hide-mobile">
+                        <span class="order-items-count">${itemsCount} bidhaa</span>
+                    </td>
+                    <td>
+                        <span class="order-total">${formatPrice(o.total)}</span>
+                    </td>
+                    <td class="hide-mobile">
+                        ${statusBadge(o.status)}
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="row-btn view" onclick="openOrderModal('${id}')" title="Ona">👁️</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        body.innerHTML = `
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Oda</th>
+                        <th>Mteja</th>
+                        <th class="hide-mobile">Bidhaa</th>
+                        <th>Jumla</th>
+                        <th class="hide-mobile">Hali</th>
+                        <th>Vitendo</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `;
+    }
+
+    // ===== MINI STATS =====
+    function renderMiniStats() {
+        const counts = { all: allOrders.length, pending: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0 };
+        allOrders.forEach(({ data: o }) => {
+            const s = o.status || 'pending';
+            if (counts[s] !== undefined) counts[s] += 1;
+        });
+
+        document.getElementById('msAll').textContent = counts.all;
+        document.getElementById('msPending').textContent = counts.pending;
+        document.getElementById('msConfirmed').textContent = counts.confirmed;
+        document.getElementById('msShipped').textContent = counts.shipped;
+        document.getElementById('msDelivered').textContent = counts.delivered;
+    }
+
+    // ===== LOAD =====
+    async function loadOrders() {
+        const body = document.getElementById('ordersBody');
+        try {
+            const snap = await getDocs(collection(db, 'orders'));
+            allOrders = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+
+            // Sort by newest
+            allOrders.sort((a, b) => {
+                const ta = a.data.createdAt?.seconds || 0;
+                const tb = b.data.createdAt?.seconds || 0;
+                return tb - ta;
+            });
+
+            renderMiniStats();
+            renderOrders();
+
+        } catch (err) {
+            console.error('Kosa la kupakia oda:', err);
+            body.innerHTML = `
+                <div class="table-empty">
+                    <span class="icon">⚠️</span>
+                    <h3>Imeshindikana kupakia oda</h3>
+                    <p>${escapeHtml(err.message)}</p>
+                </div>
+            `;
+        }
+    }
+
+    // ===== SEARCH =====
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim();
+        renderOrders();
+    });
+
+    // ===== FILTER CHIPS =====
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.mini-stat').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentFilter = chip.dataset.filter;
+            renderOrders();
+        });
+    });
+
+    // ===== MINI STATS CLICK =====
+    document.querySelectorAll('.mini-stat').forEach(stat => {
+        stat.addEventListener('click', () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.mini-stat').forEach(c => c.classList.remove('active'));
+            stat.classList.add('active');
+            currentFilter = stat.dataset.filter;
+            // Sync filter chip
+            const chip = document.querySelector(`.filter-chip[data-filter="${currentFilter}"]`);
+            if (chip) chip.classList.add('active');
+            renderOrders();
+        });
+    });
+
+    // ===== OPEN ORDER MODAL =====
+    window.openOrderModal = function (id) {
+        const item = allOrders.find(o => o.id === id);
+        if (!item) return;
+        currentOrderId = id;
+        const o = item.data;
+
+        document.getElementById('modalOrderId').textContent = o.orderId || id;
+
+        const items = o.items || [];
+        let itemsHtml = '';
+        if (items.length === 0) {
+            itemsHtml = `<p style="color:var(--gray);font-size:13px;">Hakuna bidhaa kwenye oda hii.</p>`;
+        } else {
+            itemsHtml = '<div class="item-list">';
+            items.forEach(it => {
+                const imgHtml = it.image
+                    ? `<img src="${escapeHtml(it.image)}" alt="${escapeHtml(it.name)}">`
+                    : `<div class="placeholder">👕</div>`;
+                const meta = [];
+                if (it.size) meta.push(`Ukubwa: ${escapeHtml(it.size)}`);
+                if (it.color) meta.push(`Rangi: ${escapeHtml(it.color)}`);
+                const lineTotal = (Number(it.price) || 0) * (Number(it.quantity) || 0);
+
+                itemsHtml += `
+                    <div class="order-item-row">
+                        <div class="thumb">${imgHtml}</div>
+                        <div class="info">
+                            <h4>${escapeHtml(it.name || 'Bidhaa')}</h4>
+                            <p>${meta.join(' • ') || '—'}</p>
+                        </div>
+                        <div class="price-info">
+                            <div class="qty">${it.quantity} × ${formatPrice(it.price)}</div>
+                            <div class="pr">${formatPrice(lineTotal)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            itemsHtml += '</div>';
+        }
+
+        const currentStatus = o.status || 'pending';
+        const statusButtons = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+            .map(s => `
+                <button class="status-btn ${s} ${currentStatus === s ? 'active' : ''}"
+                        onclick="changeStatus('${s}')">
+                    ${STATUS_SW[s]}
+                </button>
+            `).join('');
+
+        document.getElementById('modalBody').innerHTML = `
+            <!-- CUSTOMER -->
+            <div class="detail-section">
+                <h3>👤 Taarifa za Mteja</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Jina</label>
+                        <p>${escapeHtml(o.customerName || '—')}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Simu</label>
+                        <p>${escapeHtml(o.customerPhone || '—')}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Barua Pepe</label>
+                        <p>${escapeHtml(o.customerEmail || '—')}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Mkoa / Wilaya</label>
+                        <p>${escapeHtml(o.region || '—')} / ${escapeHtml(o.district || '—')}</p>
+                    </div>
+                    <div class="detail-item" style="grid-column:1/-1;">
+                        <label>Anwani</label>
+                        <p>${escapeHtml(o.address || '—')}</p>
+                    </div>
+                    ${o.notes ? `
+                        <div class="detail-item" style="grid-column:1/-1;">
+                            <label>Maelezo ya Ziada</label>
+                            <p>${escapeHtml(o.notes)}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+
+            <!-- ORDER INFO -->
+            <div class="detail-section">
+                <h3>📋 Taarifa za Oda</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Tarehe</label>
+                        <p>${formatDateTime(o.createdAt)}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Njia ya Malipo</label>
+                        <p>${o.paymentMethod === 'cod' ? 'Cash on Delivery' : escapeHtml(o.paymentMethod || '—')}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Hali ya Sasa</label>
+                        <p>${statusBadge(currentStatus)}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Jumla ya Bidhaa</label>
+                        <p>${o.totalQty || 0} bidhaa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEMS -->
+            <div class="detail-section">
+                <h3>🛍️ Bidhaa Zilizoagizwa</h3>
+                ${itemsHtml}
+
+                <div class="totals-box">
+                    <div class="totals-row">
+                        <span>Jumla ndogo</span>
+                        <span>${formatPrice(o.subtotal)}</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Usafirishaji</span>
+                        <span>${o.shippingFee > 0 ? formatPrice(o.shippingFee) : 'BURE'}</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>JUMLA KUU</span>
+                        <span>${formatPrice(o.total)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS UPDATE -->
+            <div class="detail-section">
+                <h3>🔄 Badilisha Hali ya Oda</h3>
+                <div class="status-actions">
+                    ${statusButtons}
+                </div>
+            </div>
+        `;
+
+        document.getElementById('orderModal').classList.add('show');
+    };
+
+    window.closeModal = function () {
+        document.getElementById('orderModal').classList.remove('show');
+        currentOrderId = null;
+    };
+
+    // ===== CHANGE STATUS =====
+    window.changeStatus = async function (newStatus) {
+        if (!currentOrderId) return;
+
+        try {
+            await updateDoc(doc(db, 'orders', currentOrderId), {
+                status: newStatus,
+                updatedAt: serverTimestamp()
+            });
+
+            // Update local data
+            const item = allOrders.find(o => o.id === currentOrderId);
+            if (item) item.data.status = newStatus;
+
+            showToast(`✅ Hali imebadilishwa: ${STATUS_SW[newStatus]}`, 'success');
+
+            renderMiniStats();
+            renderOrders();
+
+            // Re-render modal
+            openOrderModal(currentOrderId);
+
+        } catch (err) {
+            console.error('Kosa la kubadilisha hali:', err);
+            showToast('❌ Imeshindikana kubadilisha hali: ' + err.message, 'error');
+        }
+    };
+
+    // ===== CANCEL/DELETE ORDER =====
+    window.cancelOrder = async function () {
+        if (!currentOrderId) return;
+        if (!confirm('Una uhakika unataka kufuta oda hii kabisa? Kitendo hiki hakiwezi kurudishwa.')) return;
+
+        try {
+            await deleteDoc(doc(db, 'orders', currentOrderId));
+            showToast('🗑️ Oda imefutwa', 'success');
+            closeModal();
+            await loadOrders();
+        } catch (err) {
+            console.error('Kosa la kufuta oda:', err);
+            showToast('❌ Imeshindikana kufuta oda: ' + err.message, 'error');
+        }
+    };
+
+    // ===== INIT =====
+    loadOrders();
+</script>
+
+<%- include('../partials/footer') %>
