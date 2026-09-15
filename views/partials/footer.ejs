@@ -1,0 +1,284 @@
+<!-- ================== FOOTER ================== -->
+<style>
+    /* ===== FOOTER ===== */
+    .footer {
+        background: var(--primary);
+        color: #d1d5db;
+        padding: 55px 0 0;
+        margin-top: 60px;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1.5fr;
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px 40px;
+    }
+
+    .footer-col h4 {
+        color: var(--white);
+        font-size: 16px;
+        margin-bottom: 18px;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 8px;
+    }
+
+    .footer-col h4::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 32px;
+        height: 2px;
+        background: var(--accent);
+    }
+
+    .footer-logo {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--white);
+        margin-bottom: 14px;
+        display: inline-block;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-col p {
+        font-size: 14px;
+        line-height: 1.7;
+        color: #9ca3af;
+        margin-bottom: 14px;
+    }
+
+    .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .footer-col ul li a {
+        font-size: 14px;
+        color: #9ca3af;
+        transition: all 0.2s ease;
+        display: inline-block;
+    }
+
+    .footer-col ul li a:hover {
+        color: var(--accent);
+        transform: translateX(4px);
+    }
+
+    /* ===== SOCIALS ===== */
+    .socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .socials a {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--white);
+        transition: all 0.25s ease;
+    }
+
+    .socials a:hover {
+        background: var(--accent);
+        transform: translateY(-3px);
+    }
+
+    /* ===== CONTACT INFO ===== */
+    .footer-contact li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        color: #9ca3af;
+        margin-bottom: 12px;
+    }
+
+    .footer-contact li span:first-child {
+        color: var(--accent);
+        font-size: 15px;
+        margin-top: 2px;
+    }
+
+    /* ===== NEWSLETTER ===== */
+    .newsletter {
+        display: flex;
+        margin-top: 12px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .newsletter input {
+        flex: 1;
+        padding: 11px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: var(--white);
+        font-size: 14px;
+    }
+
+    .newsletter input::placeholder {
+        color: #6b7280;
+    }
+
+    .newsletter button {
+        background: var(--accent);
+        color: var(--white);
+        padding: 0 18px;
+        font-weight: 700;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+
+    .newsletter button:hover {
+        background: var(--accent-hover);
+    }
+
+    /* ===== FOOTER BOTTOM ===== */
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 20px 16px;
+        text-align: center;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .footer-bottom .payments {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .footer-bottom .payments span {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #d1d5db;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .footer-grid {
+            grid-template-columns: 1fr;
+        }
+        .footer { padding-top: 40px; }
+    }
+</style>
+
+<footer class="footer">
+    <div class="footer-grid">
+
+        <!-- COL 1: BRAND -->
+        <div class="footer-col">
+            <a href="/" class="footer-logo">👕 Clothing<span>Store</span></a>
+            <p>
+                Duka lako la nguo la kuaminika Tanzania. Tunatoa bidhaa bora,
+                bei nafuu, na huduma ya haraka kwa wateja wetu wote.
+            </p>
+            <div class="socials">
+                <a href="#" title="Facebook">📘</a>
+                <a href="#" title="Instagram">📷</a>
+                <a href="#" title="Twitter">🐦</a>
+                <a href="#" title="WhatsApp">💬</a>
+            </div>
+        </div>
+
+        <!-- COL 2: LINKS -->
+        <div class="footer-col">
+            <h4>Viungo vya Haraka</h4>
+            <ul>
+                <li><a href="/">Nyumbani</a></li>
+                <li><a href="/shop">Duka</a></li>
+                <li><a href="/about">Kuhusu Sisi</a></li>
+                <li><a href="/contact">Wasiliana</a></li>
+                <li><a href="/cart">Kikapu Changu</a></li>
+            </ul>
+        </div>
+
+        <!-- COL 3: CATEGORIES -->
+        <div class="footer-col">
+            <h4>Aina za Nguo</h4>
+            <ul>
+                <li><a href="/shop?category=men">Nguo za Wanaume</a></li>
+                <li><a href="/shop?category=women">Nguo za Wanawake</a></li>
+                <li><a href="/shop?category=kids">Nguo za Watoto</a></li>
+                <li><a href="/shop?category=shoes">Viatu</a></li>
+                <li><a href="/shop?category=accessories">Vifaa</a></li>
+            </ul>
+        </div>
+
+        <!-- COL 4: CONTACT + NEWSLETTER -->
+        <div class="footer-col">
+            <h4>Wasiliana Nasi</h4>
+            <ul class="footer-contact">
+                <li><span>📍</span> <span>Dar es Salaam, Tanzania</span></li>
+                <li><span>📞</span> <span>+255 700 000 000</span></li>
+                <li><span>📧</span> <span>info@clothingstore.co.tz</span></li>
+            </ul>
+
+            <h4 style="margin-top: 22px;">Pata Habari</h4>
+            <form class="newsletter" onsubmit="event.preventDefault(); alert('Asante! Umejisajili kwa habari zetu.');">
+                <input type="email" placeholder="Barua pepe yako" required>
+                <button type="submit">Tuma</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER BOTTOM -->
+    <div class="footer-bottom">
+        <div class="payments">
+            <span>💳 Cash on Delivery</span>
+            <span>📱 M-Pesa</span>
+            <span>📱 Tigo Pesa</span>
+            <span>📱 Airtel Money</span>
+        </div>
+        <p>&copy; <%= new Date().getFullYear() %> ClothingStore. Haki zote zimehifadhiwa.</p>
+    </div>
+</footer>
+
+<!-- ================== GLOBAL SCRIPT ================== -->
+<script>
+    // Ficha page loader mara ukurasa ukiwa tayari
+    window.addEventListener('load', function () {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.classList.add('hide');
+            setTimeout(() => loader.remove(), 500);
+        }
+    });
+
+    // Ficha loader baada ya sekunde 2 hata kama kuna kitu hakijapakia
+    setTimeout(function () {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.classList.add('hide');
+            setTimeout(() => loader.remove(), 500);
+        }
+    }, 2000);
+</script>
+</body>
+</html>
